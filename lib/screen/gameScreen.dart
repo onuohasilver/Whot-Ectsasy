@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:whot/components/cardBuilder.dart';
 
+
 class GameScreen extends StatefulWidget {
   @override
   _GameScreenState createState() => _GameScreenState();
@@ -37,7 +38,7 @@ class _GameScreenState extends State<GameScreen> {
                       height: height,
                       width: width,
                       number:7,
-                      shape: Icon(Icons.brightness_1),
+                      shape: 'circle',
                     ),
                   )
                 ],
