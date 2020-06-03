@@ -25,7 +25,6 @@ class CardBuilder extends StatelessWidget {
       'triangle': FontAwesomeIcons.angleUp,
       'circle': Icons.brightness_1
     };
-    
 
     return Padding(
       padding: const EdgeInsets.all(2.0),
@@ -50,7 +49,8 @@ class CardBuilder extends StatelessWidget {
                   shape: shape,
                   number: number,
                 ),
-                FaIcon(shapes[shape],size: height*.12,color:Colors.red[800]),
+                FaIcon(shapes[shape],
+                    size: height * .12, color: Colors.red[800]),
                 MiniColumn(
                   height: height,
                   top: false,
@@ -72,7 +72,8 @@ class MiniColumn extends StatelessWidget {
       @required this.height,
       @required this.top,
       @required this.number,
-      @required this.shape, this.shapes})
+      @required this.shape,
+      this.shapes})
       : super(key: key);
 
   final double height;
@@ -115,6 +116,28 @@ class MiniColumn extends StatelessWidget {
             ],
           )
         ],
+      ),
+    );
+  }
+}
+
+class DummyCard extends StatelessWidget {
+  final height;
+  final width;
+
+  const DummyCard({Key key, this.height, this.width}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(2.0),
+      child: Container(
+        height: height * .1,
+        width: width * .08,
+        child: Material(
+          borderRadius: BorderRadius.circular(12),
+          color:Colors.red[900],
+          child: Center(child: Text('Whot',style:GoogleFonts.cookie(color: Colors.white))),
+        ),
       ),
     );
   }
