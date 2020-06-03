@@ -34,7 +34,7 @@ class CardBuilder extends StatelessWidget {
         height: height * .2,
         width: width * .1,
         child: Material(
-          elevation: 8,
+          elevation: 18,
           borderOnForeground: true,
           borderRadius: BorderRadius.circular(12),
           color: Colors.purple[50],
@@ -52,7 +52,7 @@ class CardBuilder extends StatelessWidget {
                   number: number,
                 ),
                 FaIcon(shapes[shape],
-                    size: height * .12, color: Colors.red[800]),
+                    size: height * .10, color: Colors.red[800]),
                 MiniColumn(
                   height: height,
                   top: false,
@@ -123,12 +123,16 @@ class MiniColumn extends StatelessWidget {
   }
 }
 
+/// returns the back of a whot Card
 class DummyCard extends StatelessWidget {
   final double height;
   final double width;
   final Function onTap;
+  final bool large;
+  final Color color;
 
-  const DummyCard({Key key, this.height, this.width, this.onTap})
+  const DummyCard(
+      {Key key, this.height, this.width, this.onTap, this.large, this.color})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -138,9 +142,9 @@ class DummyCard extends StatelessWidget {
         height: height * .1,
         width: width * .08,
         child: Material(
-          elevation: 4,
+          elevation: (large ?? false) ? 8 : 15,
           borderRadius: BorderRadius.circular(12),
-          color: Colors.red[900],
+          color: (large ?? false) ? color : Colors.red[900],
           child: InkWell(
             splashColor: Colors.white,
             onTap: onTap,

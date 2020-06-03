@@ -8,24 +8,45 @@ class GameScreen extends StatefulWidget {
   _GameScreenState createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen> {
+class _GameScreenState extends State<GameScreen>
+    with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
+    animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 2));
+    animation = Tween(begin: 0.0, end: 1.0).animate(animationController);
+    animationOffset =
+        Tween<Offset>(begin: Offset.zero, end: Offset(0.1, 0.1)).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Curves.bounceInOut,
+      ),
+    );
+    animationController.repeat();
+
+    SystemChrome.setPreferredOrientations(
+      [
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ],
+    );
   }
 
+  AnimationController animationController;
+  Animation animation;
+  Animation<Offset> animationOffset;
   int currentCard = 2;
   String currentShape = 'square';
-  ScrollController scrollController=ScrollController();
+  ScrollController scrollController = ScrollController();
+  double animateValue = 0.0;
+  Color deckColor = Colors.white;
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-
+    print(animationOffset);
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -36,23 +57,49 @@ class _GameScreenState extends State<GameScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              DummyCard(
-                height: height * 3.5,
-                width: width * 1.5,
-                onTap: () {
-                  setState(() {
-                    scrollController.jumpTo(2.0);
-                    cardsInPlay.insert(
-                      2,
-                      CardDetail('star', 4),
-                    );
-                  });
-                },
+              Stack(
+                overflow: Overflow.visible,
+                fit: StackFit.loose,
+                children: [
+                  DummyCard(
+                    height: height * 3.5,
+                    width: width * 1.5,
+                    large: true,
+                    color: Colors.black,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4.0, top: 5),
+                    child: DummyCard(
+                      height: height * 3.5,
+                      width: width * 1.5,
+                      large: true,
+                      color: Colors.red[800],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0, top: 10),
+                    child: DummyCard(
+                      height: height * 3.5,
+                      width: width * 1.5,
+                      onTap: () {
+                        setState(() {
+                          animationController.forward();
+                          print('The new animation: $animationOffset');
+                          scrollController.jumpTo(1.0);
+                          cardsInPlay.insert(
+                            1,
+                            CardDetail('star', 4),
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                ],
               ),
               SizedBox(width: width * .1),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment:CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     height: height * .2,
@@ -69,22 +116,39 @@ class _GameScreenState extends State<GameScreen> {
                       },
                     ),
                   ),
-                  Container(
-                    height: height * .3,
-                    color: Colors.transparent,
-                    width: width * .13,
-                    child: Material(
-                        borderRadius: BorderRadius.circular(12),
-                        child: CardBuilder(
-                            height: height,
-                            width: width,
-                            number: currentCard,
-                            shape: currentShape)),
+                  Stack(
+                    overflow: Overflow.visible,
+                    children: [
+                      AnimatedContainer(
+                        duration: Duration(seconds: 1),
+                        height: height * .3,
+                        width: width * .13,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: deckColor,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 5, top: 1),
+                        child: Container(
+                          height: height * .3,
+                          width: width * .13,
+                          child: Material(
+                              borderRadius: BorderRadius.circular(12),
+                              child: CardBuilder(
+                                  height: height,
+                                  width: width,
+                                  number: currentCard,
+                                  shape: currentShape)),
+                        ),
+                      )
+                    ],
                   ),
                   Container(
                     height: height * .3,
                     width: width * .5,
                     child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
                       controller: scrollController,
                       itemCount: cardsInPlay.length,
                       scrollDirection: Axis.horizontal,
@@ -100,6 +164,11 @@ class _GameScreenState extends State<GameScreen> {
                                 currentCard = cardsInPlay[index].number;
                                 currentShape = cardsInPlay[index].shape;
                                 cardsInPlay.removeAt(index);
+                                if (deckColor == Colors.white) {
+                                  deckColor = Colors.red[900];
+                                } else {
+                                  deckColor = Colors.white;
+                                }
                               },
                             );
                           },
