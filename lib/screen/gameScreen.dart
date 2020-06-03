@@ -18,56 +18,91 @@ class _GameScreenState extends State<GameScreen> {
     ]);
   }
 
+  int currentCard = 2;
+  String currentShape = 'square';
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Scaffold(
         body: Container(
           height: height,
           width: width,
           color: Colors.brown[100],
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Container(
-                height: height * .2,
-                width: width * .5,
-                child: ListView.builder(
-                  itemCount: cardStack.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return DummyCard(
-                      height: height,
-                      width: width,
+              DummyCard(
+                height: height * 3.5,
+                width: width * 1.5,
+                onTap: () {
+                  setState(() {
+                    cardStack.insert(
+                      (cardStack.length~/2).toInt(),
+                      CardDetail('square', 2),
                     );
-                  },
-                ),
+                  });
+                },
               ),
-              Container(
-                height: height * .3,
-                color: Colors.transparent,
-                width: width * .13,
-                child: Material(
-                  borderRadius: BorderRadius.circular(12),
-                  child:Center(child: Text('deck'))
-                ),
-              ),
-              Container(
-                height: height * .3,
-                width: width * .5,
-                child: ListView.builder(
-                  itemCount: cardStack.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (BuildContext context, int index) {
-                    return CardBuilder(
-                        height: height,
-                        width: width,
-                        number: cardStack[index].number,
-                        shape: cardStack[index].shape);
-                  },
-                ),
+              SizedBox(width: width * .1),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    height: height * .2,
+                    width: width * .5,
+                    child: ListView.builder(
+                      itemCount: dummyIntegers.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        return DummyCard(
+                          height: height,
+                          width: width,
+                        );
+                      },
+                    ),
+                  ),
+                  Container(
+                    height: height * .3,
+                    color: Colors.transparent,
+                    width: width * .13,
+                    child: Material(
+                        borderRadius: BorderRadius.circular(12),
+                        child: CardBuilder(
+                            height: height,
+                            width: width,
+                            number: currentCard,
+                            shape: currentShape)),
+                  ),
+                  Container(
+                    height: height * .3,
+                    width: width * .5,
+                    child: ListView.builder(
+                      itemCount: cardStack.length,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CardBuilder(
+                          height: height,
+                          width: width,
+                          number: cardStack[index].number,
+                          shape: cardStack[index].shape,
+                          onTap: () {
+                            setState(
+                              () {
+                                currentCard = cardStack[index].number;
+                                currentShape = cardStack[index].shape;
+                                cardStack.removeAt(index);
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

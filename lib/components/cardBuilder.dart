@@ -8,13 +8,15 @@ class CardBuilder extends StatelessWidget {
       @required this.height,
       @required this.width,
       @required this.number,
-      @required this.shape})
+      @required this.shape,
+      this.onTap})
       : super(key: key);
 
   final double height;
   final double width;
   final int number;
   final String shape;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class CardBuilder extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           color: Colors.purple[50],
           child: InkWell(
-            onTap: () {},
+            onTap: onTap,
             splashColor: Colors.red[800],
             borderRadius: BorderRadius.circular(12),
             child: Column(
@@ -122,10 +124,12 @@ class MiniColumn extends StatelessWidget {
 }
 
 class DummyCard extends StatelessWidget {
-  final height;
-  final width;
+  final double height;
+  final double width;
+  final Function onTap;
 
-  const DummyCard({Key key, this.height, this.width}) : super(key: key);
+  const DummyCard({Key key, this.height, this.width, this.onTap})
+      : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -134,9 +138,16 @@ class DummyCard extends StatelessWidget {
         height: height * .1,
         width: width * .08,
         child: Material(
+          elevation: 4,
           borderRadius: BorderRadius.circular(12),
-          color:Colors.red[900],
-          child: Center(child: Text('Whot',style:GoogleFonts.cookie(color: Colors.white))),
+          color: Colors.red[900],
+          child: InkWell(
+            splashColor: Colors.white,
+            onTap: onTap,
+            child: Center(
+                child: Text('Whot',
+                    style: GoogleFonts.cookie(color: Colors.white))),
+          ),
         ),
       ),
     );
