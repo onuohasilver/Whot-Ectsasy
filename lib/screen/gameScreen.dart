@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:whot/components/cardBuilder.dart';
 
-
 class GameScreen extends StatefulWidget {
   @override
   _GameScreenState createState() => _GameScreenState();
@@ -27,22 +26,50 @@ class _GameScreenState extends State<GameScreen> {
         body: Container(
           height: height,
           width: width,
-          color: Colors.purple[100],
+          color: Colors.brown[100],
           child: Column(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CardBuilder(
+              Container(
+                height: height * .3,
+                width: width*.5,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: <Widget>[
+                    CardBuilder(
                       height: height,
                       width: width,
-                      number:7,
+                      number: 7,
+                      shape: 'star',
+                    ),
+                     CardBuilder(
+                      height: height,
+                      width: width,
+                      number: 7,
+                      shape: 'square',
+                    ),
+                     CardBuilder(
+                      height: height,
+                      width: width,
+                      number: 7,
                       shape: 'circle',
                     ),
-                  )
-                ],
-              )
+                     CardBuilder(
+                      height: height,
+                      width: width,
+                      number: 14,
+                      shape: 'cross',
+                    ),
+                    
+                    CardBuilder(
+                      height: height,
+                      width: width,
+                      number: 7,
+                      shape: 'triangle',
+                    ),
+                  ],
+                ),
+              ),
+
             ],
           ),
         ),
