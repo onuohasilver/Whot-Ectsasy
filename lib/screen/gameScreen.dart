@@ -43,6 +43,7 @@ class _GameScreenState extends State<GameScreen>
   Color deckColor = Colors.white;
   int code;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
+  final GlobalKey<AnimatedListState> _listKeyOpponent = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +97,8 @@ class _GameScreenState extends State<GameScreen>
                     child: DummyCard(
                       height: height * 3.5,
                       width: width * 1.5,
+                      color: Colors.red[900].withOpacity(.7),
+                      large: true,
                       onTap: () {
                         animationController.forward();
                         scrollController.jumpTo(1.0);
@@ -111,31 +114,50 @@ class _GameScreenState extends State<GameScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        height: height * .2,
-                        width: width * .5,
-                        child: ListView.builder(
-                          controller: scrollController,
-                          itemCount: dummyIntegers.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (BuildContext context, int index) {
-                            return DummyCard(
-                              height: height,
-                              width: width,
-                            );
-                          },
+                  Padding(
+                    padding: const EdgeInsets.only(top:8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          height: height * .2,
+                          width: width * .5,
+                          child: AnimatedList(
+                            key: _listKeyOpponent,
+                            physics: BouncingScrollPhysics(),
+                            controller: scrollController,
+                            initialItemCount: appData.opponentPlayerCards.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder:
+                                (BuildContext context, int index, animation) {
+                              return buildItemOpponent(
+                                  animation,
+                                  height,
+                                  width,
+                                  index,
+                                  animationController,
+                                  opponentPlayerCards,
+                                  playedCards,
+                                  appData,
+                                  _listKeyOpponent,
+                                  currentCard,
+                                  deckOfCards);
+                            },
+                          ),
                         ),
-                      ),
-                      SizedBox(width: width * .03),
-                      CircleAvatar(
-                        minRadius: width * .035,
-                        child: Icon(Icons.person),
-                        backgroundColor: Colors.blue.withOpacity(.8),
-                      )
-                    ],
+                        SizedBox(width: width * .03),
+                        Material(
+                          elevation: 15,
+                          color: Colors.transparent,
+                          shape: CircleBorder(),
+                          child: CircleAvatar(
+                            minRadius: width * .035,
+                            child: Icon(Icons.person),
+                            backgroundColor: Colors.green[900].withOpacity(.8),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                   Stack(
                     overflow: Overflow.visible,
@@ -167,41 +189,49 @@ class _GameScreenState extends State<GameScreen>
                       )
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Container(
-                        height: height * .3,
-                        width: width * .5,
-                        child: AnimatedList(
-                          key: _listKey,
-                          physics: BouncingScrollPhysics(),
-                          controller: scrollController,
-                          initialItemCount: appData.currentPlayerCards.length,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder:
-                              (BuildContext context, int index, animation) {
-                            return buildItem(
-                                animation,
-                                height,
-                                width,
-                                index,
-                                animationController,
-                                currentPlayerCards,
-                                playedCards,
-                                appData,
-                                _listKey,
-                                currentCard,
-                                deckOfCards);
-                          },
+                  Padding(
+                    padding: const EdgeInsets.only(bottom:8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Container(
+                          height: height * .3,
+                          width: width * .5,
+                          child: AnimatedList(
+                            key: _listKey,
+                            physics: BouncingScrollPhysics(),
+                            controller: scrollController,
+                            initialItemCount: appData.currentPlayerCards.length,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder:
+                                (BuildContext context, int index, animation) {
+                              return buildItem(
+                                  animation,
+                                  height,
+                                  width,
+                                  index,
+                                  animationController,
+                                  currentPlayerCards,
+                                  playedCards,
+                                  appData,
+                                  _listKey,
+                                  currentCard,
+                                  deckOfCards);
+                            },
+                          ),
                         ),
-                      ),
-                      SizedBox(width: width * .03),
-                      CircleAvatar(
-                          minRadius: width * .035,
-                          child: Icon(Icons.person),
-                          backgroundColor: Colors.red.withOpacity(.8))
-                    ],
+                        SizedBox(width: width * .03),
+                        Material(
+                          elevation: 15,
+                          color: Colors.transparent,
+                          shape: CircleBorder(),
+                          child: CircleAvatar(
+                              minRadius: width * .035,
+                              child: Icon(Icons.person),
+                              backgroundColor: Colors.blue[900].withOpacity(1)),
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),

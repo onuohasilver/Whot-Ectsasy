@@ -134,11 +134,20 @@ class DummyCard extends StatelessWidget {
   final double height;
   final double width;
   final Function onTap;
+  final int number;
+  final String shape;
   final bool large;
   final Color color;
 
   const DummyCard(
-      {Key key, this.height, this.width, this.onTap, this.large, this.color})
+      {Key key,
+      this.height,
+      this.width,
+      this.onTap,
+      this.large,
+      this.color,
+      this.number,
+      this.shape})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -162,22 +171,29 @@ class DummyCard extends StatelessWidget {
             splashColor: Colors.white,
             onTap: onTap,
             child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Whot',
-                  style: GoogleFonts.cookie(color: Colors.white),
-                ),
-                Transform.rotate(
-                  angle: pi,
-                  child: Text(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
                     'Whot',
-                    style: GoogleFonts.cookie(color: Colors.white),
+                    style: GoogleFonts.cookie(
+                        color: Colors.white,
+                        fontSize:
+                            (large ?? false) ? height * .025 : height * .042),
                   ),
-                ),
-              ],
-            )),
+                  Transform.rotate(
+                    angle: pi,
+                    child: Text(
+                      'Whot',
+                      style: GoogleFonts.cookie(
+                          color: Colors.white,
+                          fontSize:
+                              (large ?? false) ? height * .025 : height * .042),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
       ),
