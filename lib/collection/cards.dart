@@ -34,9 +34,9 @@ List<CardDetail> getRandomCards(List<CardDetail> cardStack) {
   return cardsInPlay;
 }
 
-getSingleCard() {
+getSingleCard(List<CardDetail> cardStack) {
   int randomIndex = Random().nextInt(cardStack.length);
-  CardDetail singleCard =cardStack[randomIndex];
+  CardDetail singleCard = cardStack[randomIndex];
   cardStack.removeAt(randomIndex);
   return singleCard;
 }

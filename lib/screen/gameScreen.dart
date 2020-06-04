@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:whot/components/cardBuilder.dart';
 import 'package:whot/collection/cards.dart';
+import 'package:whot/gameLogic/appProvider.dart';
 
 class GameScreen extends StatefulWidget {
   @override
@@ -13,12 +15,12 @@ class _GameScreenState extends State<GameScreen>
   @override
   void initState() {
     super.initState();
+
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 5));
     animationColor = ColorTween(begin: Colors.red, end: Colors.green)
         .animate(animationController);
-    Animation animation =
-        Tween(begin: 0.0, end: 1.0).animate(animationController);
+    animation = Tween(begin: 0.0, end: 2.0).animate(animationController);
 
     SystemChrome.setPreferredOrientations(
       [
@@ -28,8 +30,10 @@ class _GameScreenState extends State<GameScreen>
     );
   }
 
+  Animation animation;
   AnimationController animationController;
   Animation<Color> animationColor;
+  Data appData;
 
   int currentCard = 2;
   String currentShape = 'square';
@@ -40,8 +44,16 @@ class _GameScreenState extends State<GameScreen>
 
   @override
   Widget build(BuildContext context) {
+    appData = Provider.of<Data>(context);
+
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+
+    appData.createDeckOfCards();
+
+    appData.createPlayerCards(appData.entireCardDeck);
+    print(appData.opponentPlayerCards.first);
+    print(appData.currentPlayerCards.first);
 
     return SafeArea(
       child: Scaffold(
@@ -82,7 +94,8 @@ class _GameScreenState extends State<GameScreen>
                           animationController.forward();
 
                           scrollController.jumpTo(1.0);
-                          cardsInPlay.insert(1, getSingleCard());
+                          appData.currentPlayerCards
+                              .insert(1, getSingleCard(appData.entireCardDeck));
                           _listKey.currentState.insertItem(1);
                         });
                       },
@@ -145,7 +158,7 @@ class _GameScreenState extends State<GameScreen>
                       key: _listKey,
                       physics: BouncingScrollPhysics(),
                       controller: scrollController,
-                      initialItemCount: cardsInPlay.length,
+                      initialItemCount: appData.currentPlayerCards.length,
                       scrollDirection: Axis.horizontal,
                       itemBuilder:
                           (BuildContext context, int index, animation) {
@@ -172,28 +185,24 @@ class _GameScreenState extends State<GameScreen>
             return CardBuilder(
               height: height,
               width: width,
-              number: cardsInPlay[index].number,
-              shape: cardsInPlay[index].shape,
+              number: appData.currentPlayerCards[index].number,
+              shape: appData.currentPlayerCards[index].shape,
               onTap: () {
-                setState(
-                  () {
-                    if (currentCard == cardsInPlay[index].number ||
-                        currentShape == cardsInPlay[index].shape) {
-                      currentCard = cardsInPlay[index].number;
-                      currentShape = cardsInPlay[index].shape;
-                      // animationController.reverse();
-                      cardsInPlay.removeAt(index);
-                      _listKey.currentState.removeItem(
-                          index,
-                          (context, animation) =>
-                              buildItem(animation, height, width, index));
-                      Future.delayed(Duration(seconds: 13), () {
-                        cardsInPlay.insert(1, getSingleCard());
-                        _listKey.currentState.insertItem(1);
-                      });
-                    }
-                  },
-                );
+                if (currentCard == appData.currentPlayerCards[index].number ||
+                    currentShape == appData.currentPlayerCards[index].shape) {
+                  currentCard = appData.currentPlayerCards[index].number;
+                  currentShape = appData.currentPlayerCards[index].shape;
+                  appData.currentPlayerCards.removeAt(index);
+                  _listKey.currentState.removeItem(
+                      index,
+                      (context, animation) =>
+                          buildItem(animation, height, width, index));
+                  Future.delayed(Duration(seconds: 13), () {
+                    appData.currentPlayerCards
+                        .insert(1, getSingleCard(appData.entireCardDeck));
+                    _listKey.currentState.insertItem(1);
+                  });
+                }
               },
             );
           }),
