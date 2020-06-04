@@ -12,24 +12,38 @@ class _StartGameState extends State<StartGame> {
   @override
   Widget build(BuildContext context) {
     Data appData = Provider.of<Data>(context);
-
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: Container(
-          child: RaisedButton(
-              child: Text('Andrew'),
-              onPressed: () {
-                appData.createPlayerCards();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return GameScreen();
-                    },
-                  ),
-                );
-              }),
+      body: Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+            color: Colors.black,
+            image: DecorationImage(
+                image: AssetImage('assets/bg.jpg'), fit: BoxFit.cover)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+                color: Colors.brown,
+                child: Text(
+                  'Play!',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  appData.createPlayerCards();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return GameScreen();
+                      },
+                    ),
+                  );
+                }),
+          ],
         ),
       ),
     );

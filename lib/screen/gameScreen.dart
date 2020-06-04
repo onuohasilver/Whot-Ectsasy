@@ -50,7 +50,6 @@ class _GameScreenState extends State<GameScreen>
     appData = Provider.of<Data>(context);
     currentPlayerCards = appData.currentPlayerCards;
     currentPlayerCards.isEmpty ? appData.createPlayerCards() : code = 1;
-
     opponentPlayerCards = appData.opponentPlayerCards;
     deckOfCards = appData.entireCardDeck;
     currentCard = appData.currentCard;
@@ -63,7 +62,10 @@ class _GameScreenState extends State<GameScreen>
         body: Container(
           height: height,
           width: width,
-          color: Colors.brown[100],
+          decoration: BoxDecoration(
+          
+              image: DecorationImage(
+                  image: AssetImage('assets/bg.jpg'), fit: BoxFit.cover)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -147,7 +149,7 @@ class _GameScreenState extends State<GameScreen>
                                 height: height,
                                 width: width,
                                 number: currentCard?.number ?? 0,
-                                shape: currentCard?.shape ?? 'square'),
+                                shape: currentCard?.shape ?? 'start'),
                           ),
                         ),
                       )

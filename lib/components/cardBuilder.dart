@@ -27,7 +27,8 @@ class CardBuilder extends StatelessWidget {
       'cross': FontAwesomeIcons.cross,
       'star': Icons.star,
       'triangle': FontAwesomeIcons.angleUp,
-      'circle': Icons.brightness_1
+      'circle': Icons.brightness_1,
+      'start': FontAwesomeIcons.gamepad
     };
 
     return Padding(
@@ -93,7 +94,8 @@ class MiniColumn extends StatelessWidget {
       'cross': FontAwesomeIcons.cross,
       'star': Icons.star,
       'triangle': FontAwesomeIcons.angleUp,
-      'circle': Icons.brightness_1
+      'circle': Icons.brightness_1,
+      'start':FontAwesomeIcons.gamepad
     };
     return Padding(
       padding: top
