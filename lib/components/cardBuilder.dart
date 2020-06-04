@@ -9,7 +9,7 @@ class CardBuilder extends StatelessWidget {
       @required this.width,
       @required this.number,
       @required this.shape,
-      this.onTap})
+      this.onTap, this.animation})
       : super(key: key);
 
   final double height;
@@ -17,6 +17,8 @@ class CardBuilder extends StatelessWidget {
   final int number;
   final String shape;
   final Function onTap;
+  final Animation animation;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -31,39 +33,39 @@ class CardBuilder extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Container(
-        height: height * .2,
-        width: width * .1,
-        child: Material(
-          elevation: 18,
-          borderOnForeground: true,
-          borderRadius: BorderRadius.circular(12),
-          color: Colors.purple[50],
-          child: InkWell(
-            onTap: onTap,
-            splashColor: Colors.red[800],
+          height: height * .2,
+          width: width * .1,
+          child: Material(
+            elevation: 18,
+            borderOnForeground: true,
             borderRadius: BorderRadius.circular(12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                MiniColumn(
-                  height: height,
-                  top: true,
-                  shape: shape,
-                  number: number,
-                ),
-                FaIcon(shapes[shape],
-                    size: height * .10, color: Colors.red[800]),
-                MiniColumn(
-                  height: height,
-                  top: false,
-                  shape: shape,
-                  number: number,
-                ),
-              ],
+            color: Colors.purple[50],
+            child: InkWell(
+      onTap: onTap,
+      splashColor: Colors.red[800],
+      borderRadius: BorderRadius.circular(12),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          MiniColumn(
+            height: height,
+            top: true,
+            shape: shape,
+            number: number,
+          ),
+          FaIcon(shapes[shape],
+              size: height * .10, color: Colors.red[800]),
+          MiniColumn(
+            height: height,
+            top: false,
+            shape: shape,
+            number: number,
+          ),
+        ],
+      ),
             ),
           ),
         ),
-      ),
     );
   }
 }

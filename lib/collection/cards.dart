@@ -24,15 +24,24 @@ List<CardDetail> getCards(List<String> shape) {
 List<CardDetail> cardStack =
     getCards(['triangle', 'star', 'square', 'cross', 'circle']);
 
-List<CardDetail> getRandomCards() {
-  List<CardDetail>cardsInPlay=[];
-  for(var index=0;index<5;index++){
-    cardsInPlay.add(cardStack[Random().nextInt(cardStack.length)]);
+List<CardDetail> getRandomCards(List<CardDetail> cardStack) {
+  List<CardDetail> cardsInPlay = [];
+  for (var index = 0; index < 5; index++) {
+    int randomIndex = Random().nextInt(cardStack.length);
+    cardsInPlay.add(cardStack[randomIndex]);
+    cardStack.removeAt(randomIndex);
   }
   return cardsInPlay;
 }
 
-List<CardDetail>cardsInPlay=getRandomCards();
+getSingleCard() {
+  int randomIndex = Random().nextInt(cardStack.length);
+  CardDetail singleCard =cardStack[randomIndex];
+  cardStack.removeAt(randomIndex);
+  return singleCard;
+}
+
+List<CardDetail> cardsInPlay = getRandomCards(cardStack);
 
 List<int> dummyIntegers = [
   1,

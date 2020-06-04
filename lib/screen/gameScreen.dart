@@ -14,16 +14,11 @@ class _GameScreenState extends State<GameScreen>
   void initState() {
     super.initState();
     animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 2));
-    animation = Tween(begin: 0.0, end: 1.0).animate(animationController);
-    animationOffset =
-        Tween<Offset>(begin: Offset.zero, end: Offset(0.1, 0.1)).animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: Curves.bounceInOut,
-      ),
-    );
-    animationController.repeat();
+        AnimationController(vsync: this, duration: Duration(seconds: 5));
+    animationColor = ColorTween(begin: Colors.red, end: Colors.green)
+        .animate(animationController);
+    Animation animation =
+        Tween(begin: 0.0, end: 1.0).animate(animationController);
 
     SystemChrome.setPreferredOrientations(
       [
@@ -34,19 +29,20 @@ class _GameScreenState extends State<GameScreen>
   }
 
   AnimationController animationController;
-  Animation animation;
-  Animation<Offset> animationOffset;
+  Animation<Color> animationColor;
+
   int currentCard = 2;
   String currentShape = 'square';
   ScrollController scrollController = ScrollController();
-  double animateValue = 0.0;
+
   Color deckColor = Colors.white;
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    print(animationOffset);
+
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -84,12 +80,10 @@ class _GameScreenState extends State<GameScreen>
                       onTap: () {
                         setState(() {
                           animationController.forward();
-                          print('The new animation: $animationOffset');
+
                           scrollController.jumpTo(1.0);
-                          cardsInPlay.insert(
-                            1,
-                            CardDetail('star', 4),
-                          );
+                          cardsInPlay.insert(1, getSingleCard());
+                          _listKey.currentState.insertItem(1);
                         });
                       },
                     ),
@@ -125,7 +119,7 @@ class _GameScreenState extends State<GameScreen>
                         width: width * .13,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          color: deckColor,
+                          color: animationColor.value,
                         ),
                       ),
                       Padding(
@@ -147,32 +141,15 @@ class _GameScreenState extends State<GameScreen>
                   Container(
                     height: height * .3,
                     width: width * .5,
-                    child: ListView.builder(
+                    child: AnimatedList(
+                      key: _listKey,
                       physics: BouncingScrollPhysics(),
                       controller: scrollController,
-                      itemCount: cardsInPlay.length,
+                      initialItemCount: cardsInPlay.length,
                       scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CardBuilder(
-                          height: height,
-                          width: width,
-                          number: cardsInPlay[index].number,
-                          shape: cardsInPlay[index].shape,
-                          onTap: () {
-                            setState(
-                              () {
-                                currentCard = cardsInPlay[index].number;
-                                currentShape = cardsInPlay[index].shape;
-                                cardsInPlay.removeAt(index);
-                                if (deckColor == Colors.white) {
-                                  deckColor = Colors.red[900];
-                                } else {
-                                  deckColor = Colors.white;
-                                }
-                              },
-                            );
-                          },
-                        );
+                      itemBuilder:
+                          (BuildContext context, int index, animation) {
+                        return buildItem(animation, height, width, index);
                       },
                     ),
                   ),
@@ -182,6 +159,44 @@ class _GameScreenState extends State<GameScreen>
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildItem(
+      Animation<double> animation, double height, double width, int index) {
+    return ScaleTransition(
+      scale: animation,
+      child: AnimatedBuilder(
+          animation: animationController,
+          builder: (context, child) {
+            return CardBuilder(
+              height: height,
+              width: width,
+              number: cardsInPlay[index].number,
+              shape: cardsInPlay[index].shape,
+              onTap: () {
+                setState(
+                  () {
+                    if (currentCard == cardsInPlay[index].number ||
+                        currentShape == cardsInPlay[index].shape) {
+                      currentCard = cardsInPlay[index].number;
+                      currentShape = cardsInPlay[index].shape;
+                      // animationController.reverse();
+                      cardsInPlay.removeAt(index);
+                      _listKey.currentState.removeItem(
+                          index,
+                          (context, animation) =>
+                              buildItem(animation, height, width, index));
+                      Future.delayed(Duration(seconds: 13), () {
+                        cardsInPlay.insert(1, getSingleCard());
+                        _listKey.currentState.insertItem(1);
+                      });
+                    }
+                  },
+                );
+              },
+            );
+          }),
     );
   }
 }
