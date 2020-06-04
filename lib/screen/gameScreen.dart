@@ -15,7 +15,6 @@ class _GameScreenState extends State<GameScreen>
   @override
   void initState() {
     super.initState();
-
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 5));
     animationColor = ColorTween(begin: Colors.red, end: Colors.green)
@@ -34,26 +33,30 @@ class _GameScreenState extends State<GameScreen>
   AnimationController animationController;
   Animation<Color> animationColor;
   Data appData;
-
-  int currentCard = 2;
-  String currentShape = 'square';
   ScrollController scrollController = ScrollController();
-
+  List<CardDetail> currentPlayerCards;
+  List<CardDetail> opponentPlayerCards;
+  List<CardDetail> playedCards;
+  List<CardDetail> deckOfCards;
+  CardDetail currentCard;
   Color deckColor = Colors.white;
+  int code;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    appData = Provider.of<Data>(context);
-
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    appData = Provider.of<Data>(context);
+    currentPlayerCards = appData.currentPlayerCards;
+    currentPlayerCards.isEmpty ? appData.createPlayerCards() : code = 1;
 
-    appData.createDeckOfCards();
+    opponentPlayerCards = appData.opponentPlayerCards;
+    deckOfCards = appData.entireCardDeck;
+    currentCard = appData.currentCard;
+    playedCards = appData.playedCards;
 
-    appData.createPlayerCards(appData.entireCardDeck);
-    print(appData.opponentPlayerCards.first);
-    print(appData.currentPlayerCards.first);
+    print(deckOfCards);
 
     return SafeArea(
       child: Scaffold(
@@ -65,6 +68,8 @@ class _GameScreenState extends State<GameScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              Text('PC:${playedCards.length} '),
+              Text('DC:${deckOfCards.length} '),
               Stack(
                 overflow: Overflow.visible,
                 fit: StackFit.loose,
@@ -90,14 +95,10 @@ class _GameScreenState extends State<GameScreen>
                       height: height * 3.5,
                       width: width * 1.5,
                       onTap: () {
-                        setState(() {
-                          animationController.forward();
-
-                          scrollController.jumpTo(1.0);
-                          appData.currentPlayerCards
-                              .insert(1, getSingleCard(appData.entireCardDeck));
-                          _listKey.currentState.insertItem(1);
-                        });
+                        animationController.forward();
+                        scrollController.jumpTo(1.0);
+                        appData.addCardToPlayer(deckOfCards, false);
+                        _listKey.currentState.insertItem(1);
                       },
                     ),
                   ),
@@ -141,12 +142,13 @@ class _GameScreenState extends State<GameScreen>
                           height: height * .3,
                           width: width * .13,
                           child: Material(
-                              borderRadius: BorderRadius.circular(12),
-                              child: CardBuilder(
-                                  height: height,
-                                  width: width,
-                                  number: currentCard,
-                                  shape: currentShape)),
+                            borderRadius: BorderRadius.circular(12),
+                            child: CardBuilder(
+                                height: height,
+                                width: width,
+                                number: currentCard?.number ?? 0,
+                                shape: currentCard?.shape ?? 'square'),
+                          ),
                         ),
                       )
                     ],
@@ -185,21 +187,29 @@ class _GameScreenState extends State<GameScreen>
             return CardBuilder(
               height: height,
               width: width,
-              number: appData.currentPlayerCards[index].number,
-              shape: appData.currentPlayerCards[index].shape,
+              number: currentPlayerCards[index].number,
+              shape: currentPlayerCards[index].shape,
               onTap: () {
-                if (currentCard == appData.currentPlayerCards[index].number ||
-                    currentShape == appData.currentPlayerCards[index].shape) {
-                  currentCard = appData.currentPlayerCards[index].number;
-                  currentShape = appData.currentPlayerCards[index].shape;
-                  appData.currentPlayerCards.removeAt(index);
+                if (playedCards.isEmpty) {
+                  print('empty');
+                  appData.playSelectedCard(currentPlayerCards[index]);
+                  currentPlayerCards.removeAt(index);
+                  _listKey.currentState.removeItem(
+                      index,
+                      (context, animation) =>
+                          buildItem(animation, height, width, index));
+                }
+
+                if (currentCard.number == currentPlayerCards[index].number ||
+                    currentCard.shape == currentPlayerCards[index].shape) {
+                  appData.playSelectedCard(currentPlayerCards[index]);
+                  currentPlayerCards.removeAt(index);
                   _listKey.currentState.removeItem(
                       index,
                       (context, animation) =>
                           buildItem(animation, height, width, index));
                   Future.delayed(Duration(seconds: 13), () {
-                    appData.currentPlayerCards
-                        .insert(1, getSingleCard(appData.entireCardDeck));
+                    currentPlayerCards.insert(1, getSingleCard(deckOfCards));
                     _listKey.currentState.insertItem(1);
                   });
                 }

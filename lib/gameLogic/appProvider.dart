@@ -2,29 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 
 class Data extends ChangeNotifier {
-  List<CardDetail> entireCardDeck;
+  List<CardDetail> entireCardDeck = getCards(
+    ['star', 'triangle', 'square', 'circle', 'cross'],
+  );
 
-  List<CardDetail> currentPlayerCards;
+  List<CardDetail> currentPlayerCards = [];
 
-  List<CardDetail> opponentPlayerCards;
+  List<CardDetail> opponentPlayerCards = [];
 
   List<CardDetail> playedCards = [];
   CardDetail currentCard;
 
-  void createDeckOfCards() {
-    entireCardDeck =
-        getCards(['star', 'triangle', 'square', 'circle', 'cross']);
+  
+  createPlayerCards() {
+    currentPlayerCards = getRandomCards(entireCardDeck);
+    opponentPlayerCards = getRandomCards(entireCardDeck);
     notifyListeners();
   }
 
-  createPlayerCards(List<CardDetail> cardDeck) {
-    currentPlayerCards = getRandomCards(cardDeck);
-    opponentPlayerCards = getRandomCards(cardDeck);
-    notifyListeners();
-  }
+  addCardToPlayer(List<CardDetail> cardStack, bool opponent) {
+    CardDetail singleCard = getSingleCard(cardStack);
 
-  addCardToPlayer(List<CardDetail> cardDeck, bool opponent) {
-    CardDetail singleCard = getSingleCard(cardDeck);
     opponent
         ? opponentPlayerCards.insert(1, singleCard)
         : currentPlayerCards.insert(1, singleCard);
@@ -33,5 +31,8 @@ class Data extends ChangeNotifier {
 
   playSelectedCard(CardDetail selectedCard) {
     playedCards.add(selectedCard);
+    currentCard = selectedCard;
+
+    notifyListeners();
   }
 }
