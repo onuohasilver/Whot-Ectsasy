@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,8 @@ class CardBuilder extends StatelessWidget {
       @required this.width,
       @required this.number,
       @required this.shape,
-      this.onTap, this.animation})
+      this.onTap,
+      this.animation})
       : super(key: key);
 
   final double height;
@@ -18,7 +21,6 @@ class CardBuilder extends StatelessWidget {
   final String shape;
   final Function onTap;
   final Animation animation;
-  
 
   @override
   Widget build(BuildContext context) {
@@ -34,39 +36,39 @@ class CardBuilder extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Container(
-          height: height * .2,
-          width: width * .1,
-          child: Material(
-            elevation: 18,
-            borderOnForeground: true,
+        height: height * .2,
+        width: width * .1,
+        child: Material(
+          elevation: 18,
+          borderOnForeground: true,
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.brown[100],
+          child: InkWell(
+            onTap: onTap,
+            splashColor: Colors.red[800],
             borderRadius: BorderRadius.circular(12),
-            color: Colors.purple[50],
-            child: InkWell(
-      onTap: onTap,
-      splashColor: Colors.red[800],
-      borderRadius: BorderRadius.circular(12),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          MiniColumn(
-            height: height,
-            top: true,
-            shape: shape,
-            number: number,
-          ),
-          FaIcon(shapes[shape],
-              size: height * .10, color: Colors.red[800]),
-          MiniColumn(
-            height: height,
-            top: false,
-            shape: shape,
-            number: number,
-          ),
-        ],
-      ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                MiniColumn(
+                  height: height,
+                  top: true,
+                  shape: shape,
+                  number: number,
+                ),
+                FaIcon(shapes[shape],
+                    size: height * .10, color: Colors.red[800]),
+                MiniColumn(
+                  height: height,
+                  top: false,
+                  shape: shape,
+                  number: number,
+                ),
+              ],
             ),
           ),
         ),
+      ),
     );
   }
 }
@@ -95,7 +97,7 @@ class MiniColumn extends StatelessWidget {
       'star': Icons.star,
       'triangle': FontAwesomeIcons.angleUp,
       'circle': Icons.brightness_1,
-      'start':FontAwesomeIcons.gamepad
+      'start': FontAwesomeIcons.gamepad
     };
     return Padding(
       padding: top
@@ -145,16 +147,37 @@ class DummyCard extends StatelessWidget {
       child: Container(
         height: height * .1,
         width: width * .08,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            image: DecorationImage(
+                colorFilter: ColorFilter.srgbToLinearGamma(),
+                image: AssetImage('assets/bg.jpg'),
+                fit: BoxFit.cover)),
         child: Material(
           elevation: (large ?? false) ? 8 : 15,
           borderRadius: BorderRadius.circular(12),
-          color: (large ?? false) ? color : Colors.red[900],
+          color: (large ?? false) ? color : Colors.red[900].withOpacity(.6),
           child: InkWell(
+            borderRadius: BorderRadius.circular(12),
             splashColor: Colors.white,
             onTap: onTap,
             child: Center(
-                child: Text('Whot',
-                    style: GoogleFonts.cookie(color: Colors.white))),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Whot',
+                  style: GoogleFonts.cookie(color: Colors.white),
+                ),
+                Transform.rotate(
+                  angle: pi,
+                  child: Text(
+                    'Whot',
+                    style: GoogleFonts.cookie(color: Colors.white),
+                  ),
+                ),
+              ],
+            )),
           ),
         ),
       ),

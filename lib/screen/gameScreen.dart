@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:whot/components/cardBuilder.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/gameLogic/appProvider.dart';
+import 'package:whot/gameLogic/buildItems.dart';
 
 class GameScreen extends StatefulWidget {
   @override
@@ -17,7 +18,7 @@ class _GameScreenState extends State<GameScreen>
     super.initState();
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 5));
-    animationColor = ColorTween(begin: Colors.red, end: Colors.green)
+    animationColor = ColorTween(begin: Colors.red, end: Colors.red)
         .animate(animationController);
     animation = Tween(begin: 0.0, end: 2.0).animate(animationController);
 
@@ -63,7 +64,6 @@ class _GameScreenState extends State<GameScreen>
           height: height,
           width: width,
           decoration: BoxDecoration(
-          
               image: DecorationImage(
                   image: AssetImage('assets/bg.jpg'), fit: BoxFit.cover)),
           child: Row(
@@ -106,25 +106,36 @@ class _GameScreenState extends State<GameScreen>
                   ),
                 ],
               ),
-              SizedBox(width: width * .1),
+              SizedBox(width: width * .03),
               Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    height: height * .2,
-                    width: width * .5,
-                    child: ListView.builder(
-                      controller: scrollController,
-                      itemCount: dummyIntegers.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (BuildContext context, int index) {
-                        return DummyCard(
-                          height: height,
-                          width: width,
-                        );
-                      },
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        height: height * .2,
+                        width: width * .5,
+                        child: ListView.builder(
+                          controller: scrollController,
+                          itemCount: dummyIntegers.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (BuildContext context, int index) {
+                            return DummyCard(
+                              height: height,
+                              width: width,
+                            );
+                          },
+                        ),
+                      ),
+                      SizedBox(width: width * .03),
+                      CircleAvatar(
+                        minRadius: width * .035,
+                        child: Icon(Icons.person),
+                        backgroundColor: Colors.blue.withOpacity(.8),
+                      )
+                    ],
                   ),
                   Stack(
                     overflow: Overflow.visible,
@@ -139,7 +150,8 @@ class _GameScreenState extends State<GameScreen>
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 5, top: 1),
+                        padding:
+                            EdgeInsets.only(left: 5, top: 1, right: width * .1),
                         child: Container(
                           height: height * .3,
                           width: width * .13,
@@ -155,20 +167,41 @@ class _GameScreenState extends State<GameScreen>
                       )
                     ],
                   ),
-                  Container(
-                    height: height * .3,
-                    width: width * .5,
-                    child: AnimatedList(
-                      key: _listKey,
-                      physics: BouncingScrollPhysics(),
-                      controller: scrollController,
-                      initialItemCount: appData.currentPlayerCards.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder:
-                          (BuildContext context, int index, animation) {
-                        return buildItem(animation, height, width, index);
-                      },
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                        height: height * .3,
+                        width: width * .5,
+                        child: AnimatedList(
+                          key: _listKey,
+                          physics: BouncingScrollPhysics(),
+                          controller: scrollController,
+                          initialItemCount: appData.currentPlayerCards.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder:
+                              (BuildContext context, int index, animation) {
+                            return buildItem(
+                                animation,
+                                height,
+                                width,
+                                index,
+                                animationController,
+                                currentPlayerCards,
+                                playedCards,
+                                appData,
+                                _listKey,
+                                currentCard,
+                                deckOfCards);
+                          },
+                        ),
+                      ),
+                      SizedBox(width: width * .03),
+                      CircleAvatar(
+                          minRadius: width * .035,
+                          child: Icon(Icons.person),
+                          backgroundColor: Colors.red.withOpacity(.8))
+                    ],
                   ),
                 ],
               ),
@@ -176,48 +209,6 @@ class _GameScreenState extends State<GameScreen>
           ),
         ),
       ),
-    );
-  }
-
-  Widget buildItem(
-      Animation<double> animation, double height, double width, int index) {
-    return ScaleTransition(
-      scale: animation,
-      child: AnimatedBuilder(
-          animation: animationController,
-          builder: (context, child) {
-            return CardBuilder(
-              height: height,
-              width: width,
-              number: currentPlayerCards[index].number,
-              shape: currentPlayerCards[index].shape,
-              onTap: () {
-                if (playedCards.isEmpty) {
-                  print('empty');
-                  appData.playSelectedCard(currentPlayerCards[index]);
-                  currentPlayerCards.removeAt(index);
-                  _listKey.currentState.removeItem(
-                      index,
-                      (context, animation) =>
-                          buildItem(animation, height, width, index));
-                }
-
-                if (currentCard.number == currentPlayerCards[index].number ||
-                    currentCard.shape == currentPlayerCards[index].shape) {
-                  appData.playSelectedCard(currentPlayerCards[index]);
-                  currentPlayerCards.removeAt(index);
-                  _listKey.currentState.removeItem(
-                      index,
-                      (context, animation) =>
-                          buildItem(animation, height, width, index));
-                  Future.delayed(Duration(seconds: 13), () {
-                    currentPlayerCards.insert(1, getSingleCard(deckOfCards));
-                    _listKey.currentState.insertItem(1);
-                  });
-                }
-              },
-            );
-          }),
     );
   }
 }
