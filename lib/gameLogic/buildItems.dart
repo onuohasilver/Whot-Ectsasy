@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/components/cardBuilder.dart';
@@ -59,7 +61,9 @@ Widget buildItem(
                   }
                 }
 
+
                 if (playable.isNotEmpty) {
+                  log(playable.toString());
                   await appData
                       .playSelectedCard(opponentPlayerCards[playable[0]]);
                   opponentPlayerCards.removeAt(playable[0]);
