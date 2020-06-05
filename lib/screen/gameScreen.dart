@@ -71,7 +71,6 @@ class _GameScreenState extends State<GameScreen>
             children: <Widget>[
               Text('Num:${appData?.currentCard?.number} '),
               Text('Shp:${appData?.currentCard?.shape} '),
-              
               Stack(
                 overflow: Overflow.visible,
                 fit: StackFit.loose,
@@ -104,7 +103,7 @@ class _GameScreenState extends State<GameScreen>
                         animationController.forward();
                         scrollController.jumpTo(0.0);
                         appData.addCardToPlayer(deckOfCards, false);
-                        _listKey.currentState.insertItem(0);
+                        _listKey.currentState.insertItem(1);
                       },
                     ),
                   ),
@@ -218,7 +217,6 @@ class _GameScreenState extends State<GameScreen>
                                   playedCards,
                                   appData,
                                   _listKey,
-                                  currentCard,
                                   deckOfCards,
                                   opponentPlayerCards,
                                   _listKeyOpponent);

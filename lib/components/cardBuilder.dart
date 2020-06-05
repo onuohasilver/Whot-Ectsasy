@@ -30,7 +30,6 @@ class CardBuilder extends StatelessWidget {
       'star': Icons.star,
       'triangle': FontAwesomeIcons.angleUp,
       'circle': Icons.brightness_1,
-      'start': FontAwesomeIcons.gamepad
     };
 
     return Padding(

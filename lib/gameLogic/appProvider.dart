@@ -14,25 +14,23 @@ class Data extends ChangeNotifier {
 
   CardDetail currentCard;
 
-  var playableCards;
-  var playableIndex;
-  bool opponentTurn =false;
+  List<CardDetail> playableCards = [];
+  List<int> playableIndexes = [];
+  bool opponentTurn = false;
 
-  
   createPlayerCards() {
     currentPlayerCards = getRandomCards(entireCardDeck);
     opponentPlayerCards = getRandomCards(entireCardDeck);
     notifyListeners();
   }
 
-  changeTurn(){
-    opponentTurn=!opponentTurn;
+  changeTurn() {
+    opponentTurn = !opponentTurn;
     notifyListeners();
   }
 
   addCardToPlayer(List<CardDetail> cardStack, bool opponent) {
     CardDetail singleCard = getSingleCard(cardStack);
-
     opponent
         ? opponentPlayerCards.insert(1, singleCard)
         : currentPlayerCards.insert(1, singleCard);
@@ -44,17 +42,20 @@ class Data extends ChangeNotifier {
     playedCards.add(selectedCard);
     notifyListeners();
   }
-  updateFirstCard(CardDetail selectedCard){
-    currentCard=selectedCard;
-    notifyListeners();
 
+  updateCurrentCard(CardDetail selectedCard) {
+    currentCard = selectedCard;
+    notifyListeners();
   }
 
+  getPlayable(CardDetail playableCard, int playableIndex) {
+    playableCards.add(playableCard);
+    playableIndexes.add(playableIndex);
+    notifyListeners();
+  }
 
-  getPlayable(playableCards){
-    playableCards=playableCards;
-    playableIndex=playableIndex;
+  clearPlayable() {
+    playableIndexes = [];
     notifyListeners();
   }
 }
-

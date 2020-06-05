@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/components/cardBuilder.dart';
@@ -16,80 +14,101 @@ Widget buildItem(
     List<CardDetail> playedCards,
     Data appData,
     _listKey,
-    CardDetail currentCard,
     List<CardDetail> deckOfCards,
     List<CardDetail> opponentPlayerCards,
     opponentListKey) {
+  List<int> playable = appData.playableIndexes;
+  CardDetail currentCard = appData.currentCard;
   return ScaleTransition(
-      scale: animation,
-      child: CardBuilder(
-          height: height,
-          width: width,
-          number: currentPlayerCards[index].number,
-          shape: currentPlayerCards[index].shape,
-          onTap: () async {
-            await appData.playSelectedCard(currentPlayerCards[index]);
-            currentPlayerCards.removeAt(index);
-            await _listKey.currentState.removeItem(
-              index,
-              (context, animation) => buildItem(
-                  animation,
-                  height,
-                  width,
-                  index,
-                  animationController,
-                  currentPlayerCards,
-                  playedCards,
-                  appData,
-                  _listKey,
-                  currentCard,
-                  deckOfCards,
-                  opponentPlayerCards,
-                  opponentListKey),
-            );
+    scale: animation,
+    child: CardBuilder(
+      height: height,
+      width: width,
+      number: currentPlayerCards[index].number,
+      shape: currentPlayerCards[index].shape,
+      onTap: () async {
+        print(
+            'CurrentCard:${appData.currentCard.shape} ${appData.currentCard.number}');
 
-            Future.delayed(
-              Duration(seconds: 2),
-              () async {
-                List<int> playable = [];
-                print('tough');
-                for (CardDetail card in opponentPlayerCards) {
-                  if (currentCard.number == card.number ||
-                      currentCard.shape == card.shape) {
-                    playable.add(opponentPlayerCards
-                        .indexWhere((element) => element == card));
-                  }
+        if (currentCard.number == currentPlayerCards[index].number ||
+            currentCard.shape == currentPlayerCards[index].shape) {
+          appData.updateCurrentCard(currentPlayerCards[index]);
+          print(
+            'PlayedCard:${currentPlayerCards[index].shape} ${currentPlayerCards[index].number}');
+          appData.playSelectedCard(currentPlayerCards[index]);
+          currentCard=currentPlayerCards[index] ;
+          currentPlayerCards.removeAt(index);
+          await _listKey.currentState.removeItem(
+            index,
+            (context, animation) => buildItem(
+                animation,
+                height,
+                width,
+                index,
+                animationController,
+                currentPlayerCards,
+                playedCards,
+                appData,
+                _listKey,
+                deckOfCards,
+                opponentPlayerCards,
+                opponentListKey),
+          );
+
+          Future.delayed(
+            Duration(seconds: 2),
+            () async {
+              for (CardDetail card in opponentPlayerCards) {
+                print('currentCard: ${currentCard.number}${currentCard.shape}');
+
+                print('opponentCard: ${card.number}${card.shape}');
+                if (currentCard.number == card.number ||
+                    currentCard.shape == card.shape) {
+                  print(
+                      'MatchcurrentCard: ${currentCard.number}${currentCard.shape}');
+
+                  print('Match opponentCard: ${card.number}${card.shape}');
+                  appData.getPlayable(
+                      card,
+                      opponentPlayerCards
+                          .indexWhere((element) => element == card));
                 }
+              }
 
-
-                if (playable.isNotEmpty) {
-                  log(playable.toString());
-                  await appData
-                      .playSelectedCard(opponentPlayerCards[playable[0]]);
-                  opponentPlayerCards.removeAt(playable[0]);
-                  await opponentListKey.currentState.removeItem(
-                    playable[0],
-                    (context, animation) => buildItemOpponent(
-                      animation,
-                      height,
-                      width,
-                      playable[0],
-                      animationController,
-                      opponentPlayerCards,
-                      playedCards,
-                      appData,
-                      opponentListKey,
-                      currentCard,
-                      deckOfCards,
-                    ),
-                  );
-                } else {
-                  appData.addCardToPlayer(deckOfCards, true);
-                  opponentListKey.currentState.insertItem(0);
+              if (playable.isNotEmpty) {
+                for (int indexx = 0; indexx < playable.length; indexx++) {
+                  print(
+                      'This is playable ${appData.playableCards[indexx].shape}  ${appData.playableCards[indexx].number} ');
                 }
-              },
-            );
-          }));
+                await appData
+                    .playSelectedCard(opponentPlayerCards[playable.last]);
+                opponentPlayerCards.removeAt(playable.last);
+                await opponentListKey.currentState.removeItem(
+                  playable.last,
+                  (context, animation) => buildItemOpponent(
+                    animation,
+                    height,
+                    width,
+                    playable.last,
+                    animationController,
+                    opponentPlayerCards,
+                    playedCards,
+                    appData,
+                    opponentListKey,
+                    currentCard,
+                    deckOfCards,
+                  ),
+                );
+              } else {
+                appData.addCardToPlayer(deckOfCards, true);
+                opponentListKey.currentState.insertItem(0);
+              }
+            },
+          );
+        }
+      },
+    ),
+  );
 }
 
 Widget buildItemOpponent(
