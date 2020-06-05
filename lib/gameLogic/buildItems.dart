@@ -15,73 +15,78 @@ Widget buildItem(
     Data appData,
     _listKey,
     CardDetail currentCard,
-    List<CardDetail> deckOfCards) {
+    List<CardDetail> deckOfCards,
+    List<CardDetail> opponentPlayerCards,
+    opponentListKey) {
   return ScaleTransition(
-    scale: animation,
-    child: AnimatedBuilder(
-        animation: animationController,
-        builder: (context, child) {
-          return CardBuilder(
-            height: height,
-            width: width,
-            number: currentPlayerCards[index].number,
-            shape: currentPlayerCards[index].shape,
-            onTap: () {
-              if (playedCards.isEmpty) {
-                appData.playSelectedCard(currentPlayerCards[index]);
-                currentPlayerCards.removeAt(index);
-                _listKey.currentState.removeItem(
+      scale: animation,
+      child: CardBuilder(
+          height: height,
+          width: width,
+          number: currentPlayerCards[index].number,
+          shape: currentPlayerCards[index].shape,
+          onTap: () async {
+            await appData.playSelectedCard(currentPlayerCards[index]);
+            currentPlayerCards.removeAt(index);
+            await _listKey.currentState.removeItem(
+              index,
+              (context, animation) => buildItem(
+                  animation,
+                  height,
+                  width,
                   index,
-                  (context, animation) => buildItem(
-                      animation,
-                      height,
-                      width,
-                      index,
-                      animationController,
-                      currentPlayerCards,
-                      playedCards,
-                      appData,
-                      _listKey,
-                      currentCard,
-                      deckOfCards),
-                );
-              }
+                  animationController,
+                  currentPlayerCards,
+                  playedCards,
+                  appData,
+                  _listKey,
+                  currentCard,
+                  deckOfCards,
+                  opponentPlayerCards,
+                  opponentListKey),
+            );
 
-              if (currentCard.number == currentPlayerCards[index].number ||
-                  currentCard.shape == currentPlayerCards[index].shape) {
-                appData.playSelectedCard(currentPlayerCards[index]);
-                currentPlayerCards.removeAt(index);
-                _listKey.currentState.removeItem(
-                  index,
-                  (context, animation) => buildItem(
+            Future.delayed(
+              Duration(seconds: 2),
+              () async {
+                List<int> playable = [];
+                print('tough');
+                for (CardDetail card in opponentPlayerCards) {
+                  if (currentCard.number == card.number ||
+                      currentCard.shape == card.shape) {
+                    playable.add(opponentPlayerCards
+                        .indexWhere((element) => element == card));
+                  }
+                }
+
+                if (playable.isNotEmpty) {
+                  await appData
+                      .playSelectedCard(opponentPlayerCards[playable[0]]);
+                  opponentPlayerCards.removeAt(playable[0]);
+                  await opponentListKey.currentState.removeItem(
+                    playable[0],
+                    (context, animation) => buildItemOpponent(
                       animation,
                       height,
                       width,
-                      index,
+                      playable[0],
                       animationController,
-                      currentPlayerCards,
+                      opponentPlayerCards,
                       playedCards,
                       appData,
-                      _listKey,
+                      opponentListKey,
                       currentCard,
-                      deckOfCards),
-                );
-                Future.delayed(Duration(seconds: 13), () {
-                  currentPlayerCards.insert(1, getSingleCard(deckOfCards));
-                  _listKey.currentState.insertItem(1);
-                });
-              }
-            },
-          );
-        }),
-  );
+                      deckOfCards,
+                    ),
+                  );
+                } else {
+                  appData.addCardToPlayer(deckOfCards, true);
+                  opponentListKey.currentState.insertItem(0);
+                }
+              },
+            );
+          }));
 }
-
-
-
-
-
-
 
 Widget buildItemOpponent(
     Animation<double> animation,
@@ -92,7 +97,7 @@ Widget buildItemOpponent(
     List<CardDetail> opponentPlayerCards,
     List<CardDetail> playedCards,
     Data appData,
-    _listKey,
+    opponentListKey,
     CardDetail currentCard,
     List<CardDetail> deckOfCards) {
   return ScaleTransition(
@@ -100,57 +105,12 @@ Widget buildItemOpponent(
     child: AnimatedBuilder(
         animation: animationController,
         builder: (context, child) {
-          return DummyCard(
+          return CardBuilder(
             height: height,
             width: width,
             number: opponentPlayerCards[index].number,
             shape: opponentPlayerCards[index].shape,
-            onTap: () {
-              if (playedCards.isEmpty) {
-                appData.playSelectedCard(opponentPlayerCards[index]);
-                opponentPlayerCards.removeAt(index);
-                _listKey.currentState.removeItem(
-                  index,
-                  (context, animation) => buildItem(
-                      animation,
-                      height,
-                      width,
-                      index,
-                      animationController,
-                      opponentPlayerCards,
-                      playedCards,
-                      appData,
-                      _listKey,
-                      currentCard,
-                      deckOfCards),
-                );
-              }
-
-              if (currentCard.number == opponentPlayerCards[index].number ||
-                  currentCard.shape == opponentPlayerCards[index].shape) {
-                appData.playSelectedCard(opponentPlayerCards[index]);
-                opponentPlayerCards.removeAt(index);
-                _listKey.currentState.removeItem(
-                  index,
-                  (context, animation) => buildItem(
-                      animation,
-                      height,
-                      width,
-                      index,
-                      animationController,
-                      opponentPlayerCards,
-                      playedCards,
-                      appData,
-                      _listKey,
-                      currentCard,
-                      deckOfCards),
-                );
-                Future.delayed(Duration(seconds: 13), () {
-                  opponentPlayerCards.insert(1, getSingleCard(deckOfCards));
-                  _listKey.currentState.insertItem(1);
-                });
-              }
-            },
+            onTap: () {},
           );
         }),
   );

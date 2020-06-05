@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:whot/collection/cards.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'package:whot/screen/gameScreen.dart';
 
@@ -34,6 +35,9 @@ class _StartGameState extends State<StartGame> {
                 ),
                 onPressed: () {
                   appData.createPlayerCards();
+                  appData
+                      .playSelectedCard(getSingleCard(appData.entireCardDeck));
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -17,10 +17,10 @@ class _GameScreenState extends State<GameScreen>
   void initState() {
     super.initState();
     animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 5));
+        AnimationController(vsync: this, duration: Duration(seconds: 10));
     animationColor = ColorTween(begin: Colors.red, end: Colors.red)
         .animate(animationController);
-    animation = Tween(begin: 0.0, end: 2.0).animate(animationController);
+    // animation = Tween(begin: 0.0, end: 12.0).animate(animationController);
 
     SystemChrome.setPreferredOrientations(
       [
@@ -30,7 +30,7 @@ class _GameScreenState extends State<GameScreen>
     );
   }
 
-  Animation animation;
+  // Animation animation;
   AnimationController animationController;
   Animation<Color> animationColor;
   Data appData;
@@ -57,8 +57,6 @@ class _GameScreenState extends State<GameScreen>
     currentCard = appData.currentCard;
     playedCards = appData.playedCards;
 
-    print(deckOfCards);
-
     return SafeArea(
       child: Scaffold(
         body: Container(
@@ -71,8 +69,9 @@ class _GameScreenState extends State<GameScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text('PC:${playedCards.length} '),
-              Text('DC:${deckOfCards.length} '),
+              Text('Num:${appData?.currentCard?.number} '),
+              Text('Shp:${appData?.currentCard?.shape} '),
+              
               Stack(
                 overflow: Overflow.visible,
                 fit: StackFit.loose,
@@ -81,7 +80,7 @@ class _GameScreenState extends State<GameScreen>
                     height: height * 3.5,
                     width: width * 1.5,
                     large: true,
-                    color: Colors.black,
+                    color: Colors.red.withOpacity(.7),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 4.0, top: 5),
@@ -97,13 +96,15 @@ class _GameScreenState extends State<GameScreen>
                     child: DummyCard(
                       height: height * 3.5,
                       width: width * 1.5,
-                      color: Colors.red[900].withOpacity(.7),
+                      color: Colors.red[900].withOpacity(.5),
                       large: true,
                       onTap: () {
+                        print('Scared');
+                        animationController.reverse();
                         animationController.forward();
-                        scrollController.jumpTo(1.0);
+                        scrollController.jumpTo(0.0);
                         appData.addCardToPlayer(deckOfCards, false);
-                        _listKey.currentState.insertItem(1);
+                        _listKey.currentState.insertItem(0);
                       },
                     ),
                   ),
@@ -115,7 +116,7 @@ class _GameScreenState extends State<GameScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.only(top:8.0),
+                    padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -126,22 +127,24 @@ class _GameScreenState extends State<GameScreen>
                             key: _listKeyOpponent,
                             physics: BouncingScrollPhysics(),
                             controller: scrollController,
-                            initialItemCount: appData.opponentPlayerCards.length,
+                            initialItemCount:
+                                appData.opponentPlayerCards.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder:
                                 (BuildContext context, int index, animation) {
                               return buildItemOpponent(
-                                  animation,
-                                  height,
-                                  width,
-                                  index,
-                                  animationController,
-                                  opponentPlayerCards,
-                                  playedCards,
-                                  appData,
-                                  _listKeyOpponent,
-                                  currentCard,
-                                  deckOfCards);
+                                animation,
+                                height,
+                                width,
+                                index,
+                                animationController,
+                                opponentPlayerCards,
+                                playedCards,
+                                appData,
+                                _listKeyOpponent,
+                                currentCard,
+                                deckOfCards,
+                              );
                             },
                           ),
                         ),
@@ -190,7 +193,7 @@ class _GameScreenState extends State<GameScreen>
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom:8.0),
+                    padding: const EdgeInsets.only(bottom: 8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -216,7 +219,9 @@ class _GameScreenState extends State<GameScreen>
                                   appData,
                                   _listKey,
                                   currentCard,
-                                  deckOfCards);
+                                  deckOfCards,
+                                  opponentPlayerCards,
+                                  _listKeyOpponent);
                             },
                           ),
                         ),

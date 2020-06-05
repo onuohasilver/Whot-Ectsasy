@@ -11,12 +11,22 @@ class Data extends ChangeNotifier {
   List<CardDetail> opponentPlayerCards = [];
 
   List<CardDetail> playedCards = [];
+
   CardDetail currentCard;
+
+  var playableCards;
+  var playableIndex;
+  bool opponentTurn =false;
 
   
   createPlayerCards() {
     currentPlayerCards = getRandomCards(entireCardDeck);
     opponentPlayerCards = getRandomCards(entireCardDeck);
+    notifyListeners();
+  }
+
+  changeTurn(){
+    opponentTurn=!opponentTurn;
     notifyListeners();
   }
 
@@ -30,9 +40,21 @@ class Data extends ChangeNotifier {
   }
 
   playSelectedCard(CardDetail selectedCard) {
-    playedCards.add(selectedCard);
     currentCard = selectedCard;
+    playedCards.add(selectedCard);
+    notifyListeners();
+  }
+  updateFirstCard(CardDetail selectedCard){
+    currentCard=selectedCard;
+    notifyListeners();
 
+  }
+
+
+  getPlayable(playableCards){
+    playableCards=playableCards;
+    playableIndex=playableIndex;
     notifyListeners();
   }
 }
+
