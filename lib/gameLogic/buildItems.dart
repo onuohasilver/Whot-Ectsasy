@@ -32,13 +32,14 @@ Widget buildItem(
 
         if (currentCard.number == currentPlayerCards[index].number ||
             currentCard.shape == currentPlayerCards[index].shape) {
+          animationController.forward();
           appData.updateCurrentCard(currentPlayerCards[index]);
           print(
-            'PlayedCard:${currentPlayerCards[index].shape} ${currentPlayerCards[index].number}');
+              'PlayedCard:${currentPlayerCards[index].shape} ${currentPlayerCards[index].number}');
           appData.playSelectedCard(currentPlayerCards[index]);
-          currentCard=currentPlayerCards[index] ;
+          currentCard = currentPlayerCards[index];
           currentPlayerCards.removeAt(index);
-          await _listKey.currentState.removeItem(
+           _listKey.currentState.removeItem(
             index,
             (context, animation) => buildItem(
                 animation,
@@ -54,6 +55,7 @@ Widget buildItem(
                 opponentPlayerCards,
                 opponentListKey),
           );
+          
 
           Future.delayed(
             Duration(seconds: 2),
@@ -80,10 +82,10 @@ Widget buildItem(
                   print(
                       'This is playable ${appData.playableCards[indexx].shape}  ${appData.playableCards[indexx].number} ');
                 }
-                await appData
+                 appData
                     .playSelectedCard(opponentPlayerCards[playable.last]);
                 opponentPlayerCards.removeAt(playable.last);
-                await opponentListKey.currentState.removeItem(
+                 opponentListKey.currentState.removeItem(
                   playable.last,
                   (context, animation) => buildItemOpponent(
                     animation,
@@ -99,6 +101,7 @@ Widget buildItem(
                     deckOfCards,
                   ),
                 );
+                appData.clearPlayable();
               } else {
                 appData.addCardToPlayer(deckOfCards, true);
                 opponentListKey.currentState.insertItem(0);
@@ -128,7 +131,7 @@ Widget buildItemOpponent(
     child: AnimatedBuilder(
         animation: animationController,
         builder: (context, child) {
-          return CardBuilder(
+          return DummyCard(
             height: height,
             width: width,
             number: opponentPlayerCards[index].number,

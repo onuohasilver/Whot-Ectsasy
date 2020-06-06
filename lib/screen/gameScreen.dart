@@ -17,10 +17,10 @@ class _GameScreenState extends State<GameScreen>
   void initState() {
     super.initState();
     animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 10));
-    animationColor = ColorTween(begin: Colors.red, end: Colors.red)
-        .animate(animationController);
-    // animation = Tween(begin: 0.0, end: 12.0).animate(animationController);
+        AnimationController(vsync: this, duration: Duration(seconds: 2));
+
+    animationX =
+        CurvedAnimation(parent: animationController, curve: Curves.bounceInOut);
 
     SystemChrome.setPreferredOrientations(
       [
@@ -30,9 +30,8 @@ class _GameScreenState extends State<GameScreen>
     );
   }
 
-  // Animation animation;
   AnimationController animationController;
-  Animation<Color> animationColor;
+  Animation<double> animationX;
   Data appData;
   ScrollController scrollController = ScrollController();
   List<CardDetail> currentPlayerCards;
@@ -98,7 +97,6 @@ class _GameScreenState extends State<GameScreen>
                       color: Colors.red[900].withOpacity(.5),
                       large: true,
                       onTap: () {
-                        print('Scared');
                         animationController.reverse();
                         animationController.forward();
                         scrollController.jumpTo(0.0);
@@ -126,8 +124,7 @@ class _GameScreenState extends State<GameScreen>
                             key: _listKeyOpponent,
                             physics: BouncingScrollPhysics(),
                             controller: scrollController,
-                            initialItemCount:
-                                appData.opponentPlayerCards.length,
+                            initialItemCount: 5,
                             scrollDirection: Axis.horizontal,
                             itemBuilder:
                                 (BuildContext context, int index, animation) {
@@ -164,13 +161,11 @@ class _GameScreenState extends State<GameScreen>
                   Stack(
                     overflow: Overflow.visible,
                     children: [
-                      AnimatedContainer(
-                        duration: Duration(seconds: 1),
+                      Container(
                         height: height * .3,
                         width: width * .13,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          color: animationColor.value,
                         ),
                       ),
                       Padding(
@@ -203,12 +198,12 @@ class _GameScreenState extends State<GameScreen>
                             key: _listKey,
                             physics: BouncingScrollPhysics(),
                             controller: scrollController,
-                            initialItemCount: appData.currentPlayerCards.length,
+                            initialItemCount: 5,
                             scrollDirection: Axis.horizontal,
                             itemBuilder:
-                                (BuildContext context, int index, animation) {
+                                (BuildContext context, int index, animationX) {
                               return buildItem(
-                                  animation,
+                                  animationX,
                                   height,
                                   width,
                                   index,
