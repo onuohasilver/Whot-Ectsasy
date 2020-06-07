@@ -18,9 +18,19 @@ class _GameScreenState extends State<GameScreen>
     super.initState();
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 2));
-
-    animationX =
-        CurvedAnimation(parent: animationController, curve: Curves.bounceInOut);
+    boxAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(
+      CurvedAnimation(
+        parent: animationController,
+        curve: Interval(
+          0,
+          0.5,
+          curve: Curves.decelerate,
+        ),
+      ),
+    );
 
     SystemChrome.setPreferredOrientations(
       [
@@ -31,7 +41,7 @@ class _GameScreenState extends State<GameScreen>
   }
 
   AnimationController animationController;
-  Animation<double> animationX;
+  Animation<double> boxAnimation;
   Data appData;
   ScrollController scrollController = ScrollController();
   List<CardDetail> currentPlayerCards;
@@ -68,8 +78,6 @@ class _GameScreenState extends State<GameScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text('Num:${appData?.currentCard?.number} '),
-              Text('Shp:${appData?.currentCard?.shape} '),
               Stack(
                 overflow: Overflow.visible,
                 fit: StackFit.loose,
@@ -124,7 +132,7 @@ class _GameScreenState extends State<GameScreen>
                             key: _listKeyOpponent,
                             physics: BouncingScrollPhysics(),
                             controller: scrollController,
-                            initialItemCount: 5,
+                            initialItemCount: 6,
                             scrollDirection: Axis.horizontal,
                             itemBuilder:
                                 (BuildContext context, int index, animation) {
@@ -198,11 +206,13 @@ class _GameScreenState extends State<GameScreen>
                             key: _listKey,
                             physics: BouncingScrollPhysics(),
                             controller: scrollController,
-                            initialItemCount: 5,
+                            initialItemCount: 6,
                             scrollDirection: Axis.horizontal,
                             itemBuilder:
                                 (BuildContext context, int index, animationX) {
+                                  
                               return buildItem(
+                                  context,
                                   animationX,
                                   height,
                                   width,

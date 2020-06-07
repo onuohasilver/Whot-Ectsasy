@@ -26,7 +26,7 @@ List<CardDetail> cardStack =
 
 List<CardDetail> getRandomCards(List<CardDetail> cardStack) {
   List<CardDetail> cardsInPlay = [];
-  for (var index = 0; index < 5; index++) {
+  for (var index = 0; index < 6; index++) {
     int randomIndex = Random().nextInt(cardStack.length);
     cardsInPlay.add(cardStack[randomIndex]);
     cardStack.removeAt(randomIndex);

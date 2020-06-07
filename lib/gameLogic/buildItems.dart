@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/components/cardBuilder.dart';
+import 'package:whot/components/dialogBox.dart';
 
 import 'appProvider.dart';
 
 Widget buildItem(
+    BuildContext context,
     Animation<double> animation,
     double height,
     double width,
@@ -19,6 +21,7 @@ Widget buildItem(
     opponentListKey) {
   List<int> playable = appData.playableIndexes;
   CardDetail currentCard = appData.currentCard;
+  
   return ScaleTransition(
     scale: animation,
     child: CardBuilder(
@@ -39,9 +42,10 @@ Widget buildItem(
           appData.playSelectedCard(currentPlayerCards[index]);
           currentCard = currentPlayerCards[index];
           currentPlayerCards.removeAt(index);
-           _listKey.currentState.removeItem(
+          _listKey.currentState.removeItem(
             index,
             (context, animation) => buildItem(
+                context,
                 animation,
                 height,
                 width,
@@ -55,10 +59,24 @@ Widget buildItem(
                 opponentPlayerCards,
                 opponentListKey),
           );
-          
+          if (currentCard.number == 20) {
+            showCardDialog(context, height, width);
+          }
+          Future.delayed(Duration(seconds: 3), () {
+            if (currentCard.number == 14) {
+              appData.addCardToPlayer(deckOfCards, true);
+              opponentListKey.currentState.insertItem(0);
+            }
+            if (currentCard.number == 2) {
+              for (int count = 0; count < 2; count++) {
+                appData.addCardToPlayer(deckOfCards, true);
+                opponentListKey.currentState.insertItem(0);
+              }
+            }
+          });
 
           Future.delayed(
-            Duration(seconds: 2),
+            Duration(seconds: 5),
             () async {
               for (CardDetail card in opponentPlayerCards) {
                 print('currentCard: ${currentCard.number}${currentCard.shape}');
@@ -82,10 +100,9 @@ Widget buildItem(
                   print(
                       'This is playable ${appData.playableCards[indexx].shape}  ${appData.playableCards[indexx].number} ');
                 }
-                 appData
-                    .playSelectedCard(opponentPlayerCards[playable.last]);
+                appData.playSelectedCard(opponentPlayerCards[playable.last]);
                 opponentPlayerCards.removeAt(playable.last);
-                 opponentListKey.currentState.removeItem(
+                opponentListKey.currentState.removeItem(
                   playable.last,
                   (context, animation) => buildItemOpponent(
                     animation,
