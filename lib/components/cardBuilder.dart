@@ -53,7 +53,7 @@ class CardBuilder extends StatelessWidget {
                   height: height,
                   top: true,
                   shape: shape,
-                  number: number,
+                  number: number ?? '',
                 ),
                 FaIcon(shapes[shape],
                     size: height * .10, color: Colors.red[800]),
@@ -61,7 +61,7 @@ class CardBuilder extends StatelessWidget {
                   height: height,
                   top: false,
                   shape: shape,
-                  number: number,
+                  number: number ?? '',
                 ),
               ],
             ),
@@ -96,7 +96,6 @@ class MiniColumn extends StatelessWidget {
       'star': Icons.star,
       'triangle': FontAwesomeIcons.angleUp,
       'circle': Icons.brightness_1,
-      'start': FontAwesomeIcons.gamepad
     };
     return Padding(
       padding: top
@@ -109,17 +108,15 @@ class MiniColumn extends StatelessWidget {
           Column(
             children: <Widget>[
               Text(
-                number.toString(),
+                number?.toString() ?? '',
                 style: GoogleFonts.tienne(
                     fontSize: height * .03,
                     fontWeight: FontWeight.bold,
-                    color: Colors.red[900]),
+                    color: number != 0 ? Colors.red[900] : Colors.transparent),
               ),
-              FaIcon(
-                shapes[shape],
-                size: height * .02,
-                color: Colors.red[900],
-              ),
+              FaIcon(shapes[shape],
+                  size: height * .02,
+                  color: number != 0 ? Colors.red[900] : Colors.transparent),
             ],
           )
         ],
