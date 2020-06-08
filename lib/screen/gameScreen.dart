@@ -18,19 +18,6 @@ class _GameScreenState extends State<GameScreen>
     super.initState();
     animationController =
         AnimationController(vsync: this, duration: Duration(seconds: 2));
-    boxAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(
-      CurvedAnimation(
-        parent: animationController,
-        curve: Interval(
-          0,
-          0.5,
-          curve: Curves.decelerate,
-        ),
-      ),
-    );
 
     SystemChrome.setPreferredOrientations(
       [
@@ -41,7 +28,7 @@ class _GameScreenState extends State<GameScreen>
   }
 
   AnimationController animationController;
-  Animation<double> boxAnimation;
+
   Data appData;
   ScrollController scrollController = ScrollController();
   List<CardDetail> currentPlayerCards;
@@ -105,11 +92,13 @@ class _GameScreenState extends State<GameScreen>
                       color: Colors.red[900].withOpacity(.5),
                       large: true,
                       onTap: () {
-                        animationController.reverse();
                         animationController.forward();
+
+                        animationController.repeat();
                         scrollController.jumpTo(0.0);
                         appData.addCardToPlayer(deckOfCards, false);
-                        _listKey.currentState.insertItem(1);
+                        _listKey.currentState.insertItem(1,
+                            duration: Duration(milliseconds: 500));
                       },
                     ),
                   ),
@@ -132,7 +121,7 @@ class _GameScreenState extends State<GameScreen>
                             key: _listKeyOpponent,
                             physics: BouncingScrollPhysics(),
                             controller: scrollController,
-                            initialItemCount: 6,
+                            initialItemCount: opponentPlayerCards.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder:
                                 (BuildContext context, int index, animation) {
@@ -179,17 +168,35 @@ class _GameScreenState extends State<GameScreen>
                       Padding(
                         padding:
                             EdgeInsets.only(left: 5, top: 1, right: width * .1),
-                        child: Container(
-                          height: height * .3,
-                          width: width * .13,
-                          child: Material(
-                            borderRadius: BorderRadius.circular(12),
-                            child: CardBuilder(
-                                height: height,
-                                width: width,
-                                number: currentCard?.number ?? 0,
-                                shape: currentCard?.shape ?? 'start'),
-                          ),
+                        child: DragTarget(
+                          onAccept: (CardDetail cardDetail) {
+                            appData.playSelectedCard(cardDetail);
+                            currentPlayerCards.remove(cardDetail);
+                          },
+                          onWillAccept: (CardDetail cardDetail) {
+                            if (cardDetail.shape == currentCard.shape ||
+                                cardDetail.number == currentCard.number) {
+                                  return true;
+                                }else{
+                                  return false;
+                                }
+                          },
+                          builder: (context, cardOne, cardTwo) {
+                            return Container(
+                              height: height * .3,
+                              width: width * .11,
+                              child: Material(
+                                borderRadius: BorderRadius.circular(
+                                    12 * animationController.value + 4),
+                                color: Colors.pink,
+                                child: CardBuilder(
+                                    height: height,
+                                    width: width,
+                                    number: currentCard.number,
+                                    shape: currentCard.shape),
+                              ),
+                            );
+                          },
                         ),
                       )
                     ],
@@ -202,29 +209,32 @@ class _GameScreenState extends State<GameScreen>
                         Container(
                           height: height * .3,
                           width: width * .5,
-                          child: AnimatedList(
-                            key: _listKey,
-                            physics: BouncingScrollPhysics(),
-                            controller: scrollController,
-                            initialItemCount: 6,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder:
-                                (BuildContext context, int index, animationX) {
-                                  
-                              return buildItem(
-                                  context,
-                                  animationX,
-                                  height,
-                                  width,
-                                  index,
-                                  animationController,
-                                  currentPlayerCards,
-                                  playedCards,
-                                  appData,
-                                  _listKey,
-                                  deckOfCards,
-                                  opponentPlayerCards,
-                                  _listKeyOpponent);
+                          child: DragTarget(
+                            builder: (context, listOne, listTwo) {
+                              return AnimatedList(
+                                key: _listKey,
+                                physics: BouncingScrollPhysics(),
+                                controller: scrollController,
+                                initialItemCount: 20,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (BuildContext context, int index,
+                                    animationX) {
+                                  return buildItem(
+                                      context,
+                                      animationX,
+                                      height,
+                                      width,
+                                      index,
+                                      animationController,
+                                      currentPlayerCards,
+                                      playedCards,
+                                      appData,
+                                      _listKey,
+                                      deckOfCards,
+                                      opponentPlayerCards,
+                                      _listKeyOpponent);
+                                },
+                              );
                             },
                           ),
                         ),

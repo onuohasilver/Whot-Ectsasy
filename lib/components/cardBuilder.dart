@@ -36,7 +36,7 @@ class CardBuilder extends StatelessWidget {
       padding: const EdgeInsets.all(2.0),
       child: Container(
         height: height * .2,
-        width: width * .1,
+        width: width * .12,
         child: Material(
           elevation: 18,
           borderOnForeground: true,
