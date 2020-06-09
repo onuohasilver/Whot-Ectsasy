@@ -93,11 +93,9 @@ class _GameScreenState extends State<GameScreen>
                       large: true,
                       onTap: () {
                         animationController.forward();
-
-                        animationController.repeat();
                         scrollController.jumpTo(0.0);
                         appData.addCardToPlayer(deckOfCards, false);
-                        _listKey.currentState.insertItem(1,
+                        _listKey.currentState.insertItem(0,
                             duration: Duration(milliseconds: 500));
                       },
                     ),
@@ -172,14 +170,30 @@ class _GameScreenState extends State<GameScreen>
                           onAccept: (CardDetail cardDetail) {
                             appData.playSelectedCard(cardDetail);
                             currentPlayerCards.remove(cardDetail);
+                            appData.specialCardCheck(_listKeyOpponent);
+                            appData.checkOpponentsCards();
+                            
+                            if (appData.playableIndexes.isEmpty)
+                              appData.opponentGotoMarket(
+                                  deckOfCards, _listKeyOpponent);
+                            if (appData.playableCards.isNotEmpty) {
+                              appData.playCards(
+                                  _listKeyOpponent,
+                                  _listKey,
+                                  height,
+                                  width,
+                                  animationController,
+                                  appData,
+                                  deckOfCards);
+                            }
                           },
                           onWillAccept: (CardDetail cardDetail) {
                             if (cardDetail.shape == currentCard.shape ||
                                 cardDetail.number == currentCard.number) {
-                                  return true;
-                                }else{
-                                  return false;
-                                }
+                              return true;
+                            } else {
+                              return false;
+                            }
                           },
                           builder: (context, cardOne, cardTwo) {
                             return Container(
@@ -215,7 +229,7 @@ class _GameScreenState extends State<GameScreen>
                                 key: _listKey,
                                 physics: BouncingScrollPhysics(),
                                 controller: scrollController,
-                                initialItemCount: 20,
+                                initialItemCount: 6,
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: (BuildContext context, int index,
                                     animationX) {

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 
+import 'buildItems.dart';
+
 class Data extends ChangeNotifier {
   List<CardDetail> entireCardDeck = getCards(
     ['star', 'triangle', 'square', 'circle', 'cross'],
@@ -32,8 +34,8 @@ class Data extends ChangeNotifier {
   addCardToPlayer(List<CardDetail> cardStack, bool opponent) {
     CardDetail singleCard = getSingleCard(cardStack);
     opponent
-        ? opponentPlayerCards.insert(1, singleCard)
-        : currentPlayerCards.insert(1, singleCard);
+        ? opponentPlayerCards.insert(0, singleCard)
+        : currentPlayerCards.insert(0, singleCard);
     notifyListeners();
   }
 
@@ -57,5 +59,70 @@ class Data extends ChangeNotifier {
   clearPlayable() {
     playableIndexes = [];
     notifyListeners();
+  }
+
+  specialCardCheck(listKey) {
+    if (currentCard.number == 14) {
+      addCardToPlayer(entireCardDeck, true);
+      listKey.currentState.insertItem(0, duration: Duration(milliseconds: 500));
+    }
+    if (currentCard.number == 2) {
+      for (int count = 0; count < 2; count++) {
+        addCardToPlayer(entireCardDeck, true);
+        listKey.currentState
+            .insertItem(0, duration: Duration(milliseconds: 500));
+      }
+    }
+  }
+
+  checkOpponentsCards() {
+    for (CardDetail card in opponentPlayerCards) {
+      if (currentCard.number == card.number ||
+          currentCard.shape == card.shape) {
+        print(
+          'currentCard ${currentCard.shape} and ${currentCard.number}',
+        );
+        
+        getPlayable(
+            card, opponentPlayerCards.indexWhere((element) => element == card));
+      }
+    }
+  }
+
+  playCards(opponentListKey, _listKey, height, width, animationController,
+      appData, deckOfCards) {
+    List<int> playable = playableIndexes;
+
+    Future.delayed(
+      Duration(seconds: 2),
+      () {
+        playSelectedCard(opponentPlayerCards[playable.last]);
+        opponentPlayerCards.removeAt(playable.last);
+        opponentListKey.currentState.removeItem(
+          playable.last,
+          (context, animation) => buildItemOpponent(
+            animation,
+            height,
+            width,
+            playable.last,
+            animationController,
+            opponentPlayerCards,
+            playedCards,
+            appData,
+            opponentListKey,
+            currentCard,
+            deckOfCards,
+          ),
+        );
+        clearPlayable();
+        appData.specialCardCheck(_listKey);
+      },
+    );
+  }
+
+  opponentGotoMarket(deckOfCards, _listKeyOpponent) {
+    addCardToPlayer(deckOfCards, true);
+    _listKeyOpponent.currentState
+        .insertItem(0, duration: Duration(milliseconds: 500));
   }
 }
