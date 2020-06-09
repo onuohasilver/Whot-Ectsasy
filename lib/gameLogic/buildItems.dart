@@ -69,11 +69,9 @@ Widget buildItem(
                     opponentListKey),
                 duration: Duration(milliseconds: 500));
             currentPlayerCards.removeAt(index);
-            if (currentCard.number == 20) {
-              showCardDialog(context, height, width);
-            }
+
             Future.delayed(Duration(seconds: 1), () {
-              appData.specialCardCheck(opponentListKey);
+              appData.specialCardCheck(context, opponentListKey, height, width);
             });
 
             Future.delayed(

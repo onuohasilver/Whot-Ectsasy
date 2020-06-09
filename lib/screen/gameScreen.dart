@@ -170,7 +170,7 @@ class _GameScreenState extends State<GameScreen>
                           onAccept: (CardDetail cardDetail) {
                             appData.playSelectedCard(cardDetail);
                             currentPlayerCards.remove(cardDetail);
-                            appData.specialCardCheck(_listKeyOpponent);
+                            appData.specialCardCheck(context,_listKeyOpponent,height,width);
                             appData.checkOpponentsCards();
                             
                             if (appData.playableIndexes.isEmpty)
@@ -229,7 +229,7 @@ class _GameScreenState extends State<GameScreen>
                                 key: _listKey,
                                 physics: BouncingScrollPhysics(),
                                 controller: scrollController,
-                                initialItemCount: 6,
+                                initialItemCount: currentPlayerCards.length,
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: (BuildContext context, int index,
                                     animationX) {

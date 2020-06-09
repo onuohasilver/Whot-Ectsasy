@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
+import 'package:whot/components/dialogBox.dart';
 
 import 'buildItems.dart';
 
@@ -61,7 +62,7 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  specialCardCheck(listKey) {
+  specialCardCheck(context, listKey, height, width) {
     if (currentCard.number == 14) {
       addCardToPlayer(entireCardDeck, true);
       listKey.currentState.insertItem(0, duration: Duration(milliseconds: 500));
@@ -73,6 +74,9 @@ class Data extends ChangeNotifier {
             .insertItem(0, duration: Duration(milliseconds: 500));
       }
     }
+    if (currentCard.number == 20) {
+      showCardDialog(context, height, width);
+    }
   }
 
   checkOpponentsCards() {
@@ -82,7 +86,7 @@ class Data extends ChangeNotifier {
         print(
           'currentCard ${currentCard.shape} and ${currentCard.number}',
         );
-        
+
         getPlayable(
             card, opponentPlayerCards.indexWhere((element) => element == card));
       }

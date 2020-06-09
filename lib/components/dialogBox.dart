@@ -35,11 +35,11 @@ dialogContentJoker(BuildContext context, height, width) {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              getCards(height, width, 'circle'),
-              getCards(height, width, 'square'),
-              getCards(height, width, 'cross'),
-              getCards(height, width, 'triangle'),
-              getCards(height, width, 'star'),
+              showCard(height, width, 'circle'),
+              showCard(height, width, 'square'),
+              showCard(height, width, 'cross'),
+              showCard(height, width, 'triangle'),
+              showCard(height, width, 'star'),
             ],
           ),
         ],
@@ -48,7 +48,7 @@ dialogContentJoker(BuildContext context, height, width) {
   );
 }
 
-Padding getCards(double height, double width, String shape) {
+Padding showCard(double height, double width, String shape) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Container(
