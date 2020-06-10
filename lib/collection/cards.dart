@@ -8,7 +8,6 @@ class CardDetail {
 
 List<CardDetail> getCards(List<String> shape) {
   List<CardDetail> generatedCards = [];
-
   for (var index = 0; index < shape.length; index++) {
     for (var number = 1; number < 9; number++) {
       generatedCards.add(CardDetail(shape[index], number));

@@ -43,6 +43,7 @@ Widget buildItem(
       },
       onAccept: (CardDetail cardDetail) {
         appData.addCardToPlayer(deckOfCards, false);
+        scrollController.jumpTo(0);
       },
       builder: (context, listOne, listTwo) {
         return CardBuilder(
@@ -62,7 +63,7 @@ Widget buildItem(
               currentPlayerCards.removeAt(index);
 
               Future.delayed(Duration(seconds: 1), () {
-                appData.specialCardCheck(context, height, width);
+                appData.specialCardCheck(context, height, width, true);
               });
 
               Future.delayed(
@@ -72,7 +73,7 @@ Widget buildItem(
                   if (playable.isNotEmpty) {
                     appData.playCards(
                         context, height, width, appData, deckOfCards);
-                    appData.specialCardCheck(context, height, width);
+                    appData.specialCardCheck(context, height, width, false);
                   } else {
                     appData.addCardToPlayer(deckOfCards, true);
                   }

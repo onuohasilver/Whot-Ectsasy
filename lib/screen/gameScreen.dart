@@ -61,8 +61,6 @@ class _GameScreenState extends State<GameScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text('Opponent:${opponentPlayerCards.length}'),
-              Text('current:${currentPlayerCards.length}'),
               Stack(
                 overflow: Overflow.visible,
                 fit: StackFit.loose,
@@ -85,7 +83,7 @@ class _GameScreenState extends State<GameScreen>
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, top: 10),
                     child: Draggable(
-                      data:CardDetail('circle', 3),
+                      data: CardDetail('circle', 3),
                       feedback: SizedBox(
                         height: height * .3,
                         width: width * .12,
@@ -175,7 +173,8 @@ class _GameScreenState extends State<GameScreen>
                             appData.playSelectedCard(cardDetail);
                             currentPlayerCards.removeAt(
                                 currentPlayerCards.indexOf(cardDetail));
-                            appData.specialCardCheck(context, height, width);
+                            appData.specialCardCheck(
+                                context, height, width, true);
                             appData.checkOpponentsCards();
                             if (appData.playableIndexes.isEmpty) {
                               appData.opponentGotoMarket(deckOfCards);
@@ -184,7 +183,8 @@ class _GameScreenState extends State<GameScreen>
                             if (appData.playableCards.isNotEmpty) {
                               appData.playCards(
                                   context, height, width, appData, deckOfCards);
-                              appData.specialCardCheck(context, height, width);
+                              appData.specialCardCheck(
+                                  context, height, width, false);
                             }
                           },
                           onWillAccept: (CardDetail cardDetail) {

@@ -66,13 +66,14 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  void specialCardCheck(BuildContext context, double height, double width) {
+  void specialCardCheck(
+      BuildContext context, double height, double width, bool opponent) {
     if (currentCard.number == 14) {
-      addCardToPlayer(entireCardDeck, true);
+      addCardToPlayer(entireCardDeck, opponent);
     }
     if (currentCard.number == 2) {
       for (int count = 0; count < 2; count++) {
-        addCardToPlayer(entireCardDeck, true);
+        addCardToPlayer(entireCardDeck, opponent);
       }
     }
     if (currentCard.number == 20) {
@@ -100,7 +101,6 @@ class Data extends ChangeNotifier {
         opponentPlayerCards.removeAt(playable.last);
 
         clearPlayable();
-        appData.specialCardCheck(context, height, width);
       },
     );
   }
