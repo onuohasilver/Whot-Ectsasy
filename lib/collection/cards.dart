@@ -16,6 +16,9 @@ List<CardDetail> getCards(List<String> shape) {
       generatedCards.add(CardDetail(shape[index], number));
     }
   }
+  for (var number = 0; number < 5; number++) {
+    generatedCards.add(CardDetail('joker', 20));
+  }
   generatedCards.shuffle(Random());
   return generatedCards;
 }

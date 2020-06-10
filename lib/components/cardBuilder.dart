@@ -24,12 +24,18 @@ class CardBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, IconData> shapes = {
+    Map<String, dynamic> shapes = {
       'square': FontAwesomeIcons.squareFull,
       'cross': FontAwesomeIcons.cross,
       'star': Icons.star,
       'triangle': FontAwesomeIcons.angleUp,
       'circle': Icons.brightness_1,
+      'joker': buildWhotCenter(
+        Colors.red[900],
+        height*2.5,
+        width,
+        false,
+      ),
     };
 
     return Padding(
@@ -55,8 +61,10 @@ class CardBuilder extends StatelessWidget {
                   shape: shape,
                   number: number ?? '',
                 ),
-                FaIcon(shapes[shape],
-                    size: height * .10, color: Colors.red[800]),
+                shape == 'joker'
+                    ? shapes[shape]
+                    : FaIcon(shapes[shape],
+                        size: height * .10, color: Colors.red[800]),
                 MiniColumn(
                   height: height,
                   top: false,
@@ -90,12 +98,13 @@ class MiniColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, IconData> shapes = {
+    Map<String, dynamic> shapes = {
       'square': FontAwesomeIcons.squareFull,
       'cross': FontAwesomeIcons.cross,
       'star': Icons.star,
       'triangle': FontAwesomeIcons.angleUp,
       'circle': Icons.brightness_1,
+      'joker':''
     };
     return Padding(
       padding: top
@@ -114,7 +123,7 @@ class MiniColumn extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: number != 0 ? Colors.red[900] : Colors.transparent),
               ),
-              FaIcon(shapes[shape],
+              shape=='joker'?Container():FaIcon(shapes[shape],
                   size: height * .02,
                   color: number != 0 ? Colors.red[900] : Colors.transparent),
             ],
@@ -166,33 +175,40 @@ class DummyCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             splashColor: Colors.white,
             onTap: onTap,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Whot',
-                    style: GoogleFonts.cookie(
-                        color: Colors.white,
-                        fontSize:
-                            (large ?? false) ? height * .025 : height * .042),
-                  ),
-                  Transform.rotate(
-                    angle: pi,
-                    child: Text(
-                      'Whot',
-                      style: GoogleFonts.cookie(
-                          color: Colors.white,
-                          fontSize:
-                              (large ?? false) ? height * .025 : height * .042),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: buildWhotCenter(Colors.white, height, width, false),
           ),
         ),
       ),
     );
   }
+}
+
+Center buildWhotCenter(
+  Color color,
+  double height,
+  double width,
+  bool large,
+) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Whot',
+          style: GoogleFonts.cookie(
+              color: color,
+              fontSize: (large ?? false) ? height * .025 : height * .025),
+        ),
+        Transform.rotate(
+          angle: pi,
+          child: Text(
+            'Whot',
+            style: GoogleFonts.cookie(
+                color: color,
+                fontSize: (large ?? false) ? height * .025 : height * .025),
+          ),
+        ),
+      ],
+    ),
+  );
 }

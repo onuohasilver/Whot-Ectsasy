@@ -189,7 +189,8 @@ class _GameScreenState extends State<GameScreen>
                           },
                           onWillAccept: (CardDetail cardDetail) {
                             if (cardDetail.shape == currentCard.shape ||
-                                cardDetail.number == currentCard.number) {
+                                cardDetail.number == currentCard.number ||
+                                cardDetail.number == 20) {
                               return true;
                             } else {
                               return false;

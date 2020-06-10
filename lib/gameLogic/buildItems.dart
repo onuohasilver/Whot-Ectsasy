@@ -34,7 +34,7 @@ Widget buildItem(
     childWhenDragging: Container(),
     child: DragTarget(
       onWillAccept: (CardDetail cardDetail) {
-        print('cards');
+        print(cardDetail.shape);
         if (cardDetail.shape == 'circle' || cardDetail.number == 3) {
           return true;
         } else {
