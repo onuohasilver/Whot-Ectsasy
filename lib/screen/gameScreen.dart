@@ -92,8 +92,8 @@ class _GameScreenState extends State<GameScreen>
                         child: CardBuilder(
                             height: height,
                             width: width,
-                            number: 3,
-                            shape: 'circle'),
+                            number: deckOfCards.first.number,
+                            shape: deckOfCards.first.shape),
                       ),
                       child: DummyCard(
                         height: height * 3.5,

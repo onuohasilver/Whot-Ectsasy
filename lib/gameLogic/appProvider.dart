@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/components/dialogBox.dart';
-import 'buildItems.dart';
 
 class Data extends ChangeNotifier {
   List<CardDetail> entireCardDeck = getCards(

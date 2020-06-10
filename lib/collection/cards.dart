@@ -17,7 +17,7 @@ List<CardDetail> getCards(List<String> shape) {
       generatedCards.add(CardDetail(shape[index], number));
     }
   }
-
+  generatedCards.shuffle(Random());
   return generatedCards;
 }
 
@@ -35,20 +35,11 @@ List<CardDetail> getRandomCards(List<CardDetail> cardStack) {
 }
 
 getSingleCard(List<CardDetail> cardStack) {
-  int randomIndex = Random().nextInt(cardStack.length);
-  CardDetail singleCard = cardStack[randomIndex];
-  cardStack.removeAt(randomIndex);
+  CardDetail singleCard = cardStack.first;
+  cardStack.removeAt(0);
   return singleCard;
 }
 
 List<CardDetail> cardsInPlay = getRandomCards(cardStack);
 
-List<int> dummyIntegers = [
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7
-];
+List<int> dummyIntegers = [1, 2, 3, 4, 5, 6, 7];
