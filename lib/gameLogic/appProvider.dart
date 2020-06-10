@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/components/dialogBox.dart';
-
 import 'buildItems.dart';
 
 class Data extends ChangeNotifier {
   List<CardDetail> entireCardDeck = getCards(
-    ['star', 'triangle', 'square', 'circle', 'cross'],
+    [
+      'star',
+      'triangle',
+      'square',
+      'circle',
+      'cross',
+    ],
   );
 
   List<CardDetail> currentPlayerCards = [];
@@ -40,38 +45,35 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  playSelectedCard(CardDetail selectedCard) {
+  void playSelectedCard(CardDetail selectedCard) {
     currentCard = selectedCard;
     playedCards.add(selectedCard);
     notifyListeners();
   }
 
-  updateCurrentCard(CardDetail selectedCard) {
+  void updateCurrentCard(CardDetail selectedCard) {
     currentCard = selectedCard;
     notifyListeners();
   }
 
-  getPlayable(CardDetail playableCard, int playableIndex) {
+  void getPlayable(CardDetail playableCard, int playableIndex) {
     playableCards.add(playableCard);
     playableIndexes.add(playableIndex);
     notifyListeners();
   }
 
-  clearPlayable() {
+  void clearPlayable() {
     playableIndexes = [];
     notifyListeners();
   }
 
-  specialCardCheck(context, listKey, height, width) {
+  void specialCardCheck(BuildContext context, double height, double width) {
     if (currentCard.number == 14) {
       addCardToPlayer(entireCardDeck, true);
-      listKey.currentState.insertItem(0, duration: Duration(milliseconds: 500));
     }
     if (currentCard.number == 2) {
       for (int count = 0; count < 2; count++) {
         addCardToPlayer(entireCardDeck, true);
-        listKey.currentState
-            .insertItem(0, duration: Duration(milliseconds: 500));
       }
     }
     if (currentCard.number == 20) {
@@ -79,22 +81,17 @@ class Data extends ChangeNotifier {
     }
   }
 
-  checkOpponentsCards() {
+  void checkOpponentsCards() {
     for (CardDetail card in opponentPlayerCards) {
       if (currentCard.number == card.number ||
           currentCard.shape == card.shape) {
-        print(
-          'currentCard ${currentCard.shape} and ${currentCard.number}',
-        );
-
-        getPlayable(
-            card, opponentPlayerCards.indexWhere((element) => element == card));
+        getPlayable(card, opponentPlayerCards.indexOf(card));
       }
     }
   }
 
-  playCards(opponentListKey, _listKey, height, width, animationController,
-      appData, deckOfCards) {
+  void playCards(BuildContext context, double height, double width,
+      Data appData, List<CardDetail> deckOfCards) {
     List<int> playable = playableIndexes;
 
     Future.delayed(
@@ -102,31 +99,14 @@ class Data extends ChangeNotifier {
       () {
         playSelectedCard(opponentPlayerCards[playable.last]);
         opponentPlayerCards.removeAt(playable.last);
-        opponentListKey.currentState.removeItem(
-          playable.last,
-          (context, animation) => buildItemOpponent(
-            animation,
-            height,
-            width,
-            playable.last,
-            animationController,
-            opponentPlayerCards,
-            playedCards,
-            appData,
-            opponentListKey,
-            currentCard,
-            deckOfCards,
-          ),
-        );
+
         clearPlayable();
-        appData.specialCardCheck(_listKey);
+        appData.specialCardCheck(context, height, width);
       },
     );
   }
 
-  opponentGotoMarket(deckOfCards, _listKeyOpponent) {
+  opponentGotoMarket(List<CardDetail> deckOfCards) {
     addCardToPlayer(deckOfCards, true);
-    _listKeyOpponent.currentState
-        .insertItem(0, duration: Duration(milliseconds: 500));
   }
 }

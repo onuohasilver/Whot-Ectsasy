@@ -28,7 +28,6 @@ class _GameScreenState extends State<GameScreen>
   }
 
   AnimationController animationController;
-
   Data appData;
   ScrollController scrollController = ScrollController();
   List<CardDetail> currentPlayerCards;
@@ -36,7 +35,7 @@ class _GameScreenState extends State<GameScreen>
   List<CardDetail> playedCards;
   List<CardDetail> deckOfCards;
   CardDetail currentCard;
-  Color deckColor = Colors.white;
+  int rangeLength = 6;
   int code;
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   final GlobalKey<AnimatedListState> _listKeyOpponent = GlobalKey();
@@ -65,6 +64,8 @@ class _GameScreenState extends State<GameScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+              Text('Opponent:${opponentPlayerCards.length}'),
+              Text('current:${currentPlayerCards.length}'),
               Stack(
                 overflow: Overflow.visible,
                 fit: StackFit.loose,
@@ -92,11 +93,8 @@ class _GameScreenState extends State<GameScreen>
                       color: Colors.red[900].withOpacity(.5),
                       large: true,
                       onTap: () {
-                        animationController.forward();
                         scrollController.jumpTo(0.0);
-                        appData.addCardToPlayer(deckOfCards, false);
-                        _listKey.currentState.insertItem(0,
-                            duration: Duration(milliseconds: 500));
+                        appData.addCardToPlayer(deckOfCards, true);
                       },
                     ),
                   ),
@@ -115,20 +113,17 @@ class _GameScreenState extends State<GameScreen>
                         Container(
                           height: height * .2,
                           width: width * .5,
-                          child: AnimatedList(
+                          child: ListView.builder(
                             key: _listKeyOpponent,
                             physics: BouncingScrollPhysics(),
                             controller: scrollController,
-                            initialItemCount: opponentPlayerCards.length,
+                            itemCount: opponentPlayerCards.length,
                             scrollDirection: Axis.horizontal,
-                            itemBuilder:
-                                (BuildContext context, int index, animation) {
+                            itemBuilder: (BuildContext context, int index) {
                               return buildItemOpponent(
-                                animation,
                                 height,
                                 width,
                                 index,
-                                animationController,
                                 opponentPlayerCards,
                                 playedCards,
                                 appData,
@@ -167,24 +162,21 @@ class _GameScreenState extends State<GameScreen>
                         padding:
                             EdgeInsets.only(left: 5, top: 1, right: width * .1),
                         child: DragTarget(
-                          onAccept: (CardDetail cardDetail) {
+                          onAccept: (CardDetail cardDetail) async {
                             appData.playSelectedCard(cardDetail);
-                            currentPlayerCards.remove(cardDetail);
-                            appData.specialCardCheck(context,_listKeyOpponent,height,width);
+
+                            currentPlayerCards.removeAt(
+                                currentPlayerCards.indexOf(cardDetail));
+                            appData.specialCardCheck(context, height, width);
                             appData.checkOpponentsCards();
-                            
-                            if (appData.playableIndexes.isEmpty)
-                              appData.opponentGotoMarket(
-                                  deckOfCards, _listKeyOpponent);
+                            if (appData.playableIndexes.isEmpty) {
+                              appData.opponentGotoMarket(deckOfCards);
+                            }
+
                             if (appData.playableCards.isNotEmpty) {
                               appData.playCards(
-                                  _listKeyOpponent,
-                                  _listKey,
-                                  height,
-                                  width,
-                                  animationController,
-                                  appData,
-                                  deckOfCards);
+                                  context, height, width, appData, deckOfCards);
+                              appData.specialCardCheck(context, height, width);
                             }
                           },
                           onWillAccept: (CardDetail cardDetail) {
@@ -225,21 +217,21 @@ class _GameScreenState extends State<GameScreen>
                           width: width * .5,
                           child: DragTarget(
                             builder: (context, listOne, listTwo) {
-                              return AnimatedList(
+                              return ListView.builder(
                                 key: _listKey,
                                 physics: BouncingScrollPhysics(),
                                 controller: scrollController,
-                                initialItemCount: currentPlayerCards.length,
+                                itemCount: currentPlayerCards.length,
                                 scrollDirection: Axis.horizontal,
-                                itemBuilder: (BuildContext context, int index,
-                                    animationX) {
+                                itemBuilder: (
+                                  BuildContext context,
+                                  int index,
+                                ) {
                                   return buildItem(
                                       context,
-                                      animationX,
                                       height,
                                       width,
                                       index,
-                                      animationController,
                                       currentPlayerCards,
                                       playedCards,
                                       appData,
