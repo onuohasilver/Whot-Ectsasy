@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:whot/collection/cards.dart';
 import 'cardBuilder.dart';
 
-showCardDialog(context, height, width) {
+showCardDialog(
+    BuildContext context, double height, double width, CardDetail currentCard) {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -11,13 +13,14 @@ showCardDialog(context, height, width) {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: dialogContentJoker(context, height, width),
+        child: dialogContentJoker(context, height, width, currentCard),
       );
     },
   );
 }
 
-dialogContentJoker(BuildContext context, height, width) {
+dialogContentJoker(
+    BuildContext context, double height, double width, CardDetail currentCard) {
   return Material(
     elevation: 150,
     color: Colors.transparent,
@@ -35,11 +38,11 @@ dialogContentJoker(BuildContext context, height, width) {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              showCard(height, width, 'circle'),
-              showCard(height, width, 'square'),
-              showCard(height, width, 'cross'),
-              showCard(height, width, 'triangle'),
-              showCard(height, width, 'star'),
+              showCard(context, height, width, 'circle', currentCard),
+              showCard(context, height, width, 'square', currentCard),
+              showCard(context, height, width, 'cross', currentCard),
+              showCard(context, height, width, 'triangle', currentCard),
+              showCard(context, height, width, 'star', currentCard),
             ],
           ),
         ],
@@ -48,14 +51,19 @@ dialogContentJoker(BuildContext context, height, width) {
   );
 }
 
-Padding showCard(double height, double width, String shape) {
+Padding showCard(BuildContext context, double height, double width,
+    String shape, CardDetail currentCard) {
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Container(
       height: height * .3,
       width: width * .1,
       child: CardBuilder(
-        onTap: () {},
+        onTap: () {
+          currentCard.shape = shape;
+          currentCard.number = 20;
+          Navigator.pop(context);
+        },
         shape: shape,
         number: 0,
         width: width * 1.3,

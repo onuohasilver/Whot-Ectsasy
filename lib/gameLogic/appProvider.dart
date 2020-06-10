@@ -31,12 +31,12 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  changeTurn() {
+  void changeTurn() {
     opponentTurn = !opponentTurn;
     notifyListeners();
   }
 
-  addCardToPlayer(List<CardDetail> cardStack, bool opponent) {
+  void addCardToPlayer(List<CardDetail> cardStack, bool opponent) {
     CardDetail singleCard = getSingleCard(cardStack);
     opponent
         ? opponentPlayerCards.insert(0, singleCard)
@@ -77,8 +77,9 @@ class Data extends ChangeNotifier {
       }
     }
     if (currentCard.number == 20) {
-      showCardDialog(context, height, width);
+      showCardDialog(context, height, width,currentCard);
     }
+    notifyListeners();
   }
 
   void checkOpponentsCards() {
@@ -88,6 +89,7 @@ class Data extends ChangeNotifier {
         getPlayable(card, opponentPlayerCards.indexOf(card));
       }
     }
+    notifyListeners();
   }
 
   void playCards(BuildContext context, double height, double width,
@@ -103,9 +105,12 @@ class Data extends ChangeNotifier {
         clearPlayable();
       },
     );
+    notifyListeners();
   }
 
   opponentGotoMarket(List<CardDetail> deckOfCards) {
     addCardToPlayer(deckOfCards, true);
+    notifyListeners();
+    
   }
 }

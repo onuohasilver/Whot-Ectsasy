@@ -174,7 +174,7 @@ class _GameScreenState extends State<GameScreen>
                             currentPlayerCards.removeAt(
                                 currentPlayerCards.indexOf(cardDetail));
                             appData.specialCardCheck(
-                                context, height, width, true);
+                                context, height, width, false);
                             appData.checkOpponentsCards();
                             if (appData.playableIndexes.isEmpty) {
                               appData.opponentGotoMarket(deckOfCards);
