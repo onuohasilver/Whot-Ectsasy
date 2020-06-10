@@ -16,8 +16,6 @@ class _GameScreenState extends State<GameScreen>
   @override
   void initState() {
     super.initState();
-    animationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 2));
 
     SystemChrome.setPreferredOrientations(
       [
@@ -27,7 +25,6 @@ class _GameScreenState extends State<GameScreen>
     );
   }
 
-  AnimationController animationController;
   Data appData;
   ScrollController scrollController = ScrollController();
   List<CardDetail> currentPlayerCards;
@@ -87,15 +84,27 @@ class _GameScreenState extends State<GameScreen>
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 8.0, top: 10),
-                    child: DummyCard(
-                      height: height * 3.5,
-                      width: width * 1.5,
-                      color: Colors.red[900].withOpacity(.5),
-                      large: true,
-                      onTap: () {
-                        scrollController.jumpTo(0.0);
-                        appData.addCardToPlayer(deckOfCards, true);
-                      },
+                    child: Draggable(
+                      data:CardDetail('circle', 3),
+                      feedback: SizedBox(
+                        height: height * .3,
+                        width: width * .12,
+                        child: CardBuilder(
+                            height: height,
+                            width: width,
+                            number: 3,
+                            shape: 'circle'),
+                      ),
+                      child: DummyCard(
+                        height: height * 3.5,
+                        width: width * 1.5,
+                        color: Colors.red[900].withOpacity(.5),
+                        large: true,
+                        onTap: () {
+                          scrollController.jumpTo(0.0);
+                          appData.addCardToPlayer(deckOfCards, true);
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -162,9 +171,8 @@ class _GameScreenState extends State<GameScreen>
                         padding:
                             EdgeInsets.only(left: 5, top: 1, right: width * .1),
                         child: DragTarget(
-                          onAccept: (CardDetail cardDetail) async {
+                          onAccept: (CardDetail cardDetail) {
                             appData.playSelectedCard(cardDetail);
-
                             currentPlayerCards.removeAt(
                                 currentPlayerCards.indexOf(cardDetail));
                             appData.specialCardCheck(context, height, width);
@@ -192,8 +200,7 @@ class _GameScreenState extends State<GameScreen>
                               height: height * .3,
                               width: width * .11,
                               child: Material(
-                                borderRadius: BorderRadius.circular(
-                                    12 * animationController.value + 4),
+                                borderRadius: BorderRadius.circular(12),
                                 color: Colors.pink,
                                 child: CardBuilder(
                                     height: height,
@@ -238,6 +245,7 @@ class _GameScreenState extends State<GameScreen>
                                       _listKey,
                                       deckOfCards,
                                       opponentPlayerCards,
+                                      scrollController,
                                       _listKeyOpponent);
                                 },
                               );

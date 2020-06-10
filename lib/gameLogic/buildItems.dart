@@ -15,6 +15,7 @@ Widget buildItem(
     _listKey,
     List<CardDetail> deckOfCards,
     List<CardDetail> opponentPlayerCards,
+    ScrollController scrollController,
     opponentListKey) {
   List<int> playable = appData.playableIndexes;
   CardDetail currentCard = appData.currentCard;
@@ -31,42 +32,55 @@ Widget buildItem(
             number: currentPlayerCards[index].number,
             shape: currentPlayerCards[index].shape)),
     childWhenDragging: Container(),
-    onDragStarted: () {
-      currentPlayerCards.removeAt(index);
-    },
-    child: CardBuilder(
-      height: height,
-      width: width,
-      number: currentPlayerCards[index].number,
-      shape: currentPlayerCards[index].shape,
-      onTap: () async {
-        if (currentCard.number == currentPlayerCards[index].number ||
-            currentCard.shape == currentPlayerCards[index].shape) {
-          appData.updateCurrentCard(currentPlayerCards[index]);
-          print(
-              'PlayedCard:${currentPlayerCards[index].shape} ${currentPlayerCards[index].number}');
-          appData.playSelectedCard(currentPlayerCards[index]);
-          currentCard = currentPlayerCards[index];
-
-          currentPlayerCards.removeAt(index);
-
-          Future.delayed(Duration(seconds: 1), () {
-            appData.specialCardCheck(context, height, width);
-          });
-
-          Future.delayed(
-            Duration(seconds: 2),
-            () async {
-              appData.checkOpponentsCards();
-              if (playable.isNotEmpty) {
-                appData.playCards(context, height, width, appData, deckOfCards);
-                appData.specialCardCheck(context, height, width);
-              } else {
-                appData.addCardToPlayer(deckOfCards, true);
-              }
-            },
-          );
+    child: DragTarget(
+      onWillAccept: (CardDetail cardDetail) {
+        print('cards');
+        if (cardDetail.shape == 'circle' || cardDetail.number == 3) {
+          return true;
+        } else {
+          return false;
         }
+      },
+      onAccept: (CardDetail cardDetail) {
+        appData.addCardToPlayer(deckOfCards, false);
+      },
+      builder: (context, listOne, listTwo) {
+        return CardBuilder(
+          height: height,
+          width: width,
+          number: currentPlayerCards[index].number,
+          shape: currentPlayerCards[index].shape,
+          onTap: () async {
+            if (currentCard.number == currentPlayerCards[index].number ||
+                currentCard.shape == currentPlayerCards[index].shape) {
+              appData.updateCurrentCard(currentPlayerCards[index]);
+              print(
+                  'PlayedCard:${currentPlayerCards[index].shape} ${currentPlayerCards[index].number}');
+              appData.playSelectedCard(currentPlayerCards[index]);
+              currentCard = currentPlayerCards[index];
+
+              currentPlayerCards.removeAt(index);
+
+              Future.delayed(Duration(seconds: 1), () {
+                appData.specialCardCheck(context, height, width);
+              });
+
+              Future.delayed(
+                Duration(seconds: 2),
+                () async {
+                  appData.checkOpponentsCards();
+                  if (playable.isNotEmpty) {
+                    appData.playCards(
+                        context, height, width, appData, deckOfCards);
+                    appData.specialCardCheck(context, height, width);
+                  } else {
+                    appData.addCardToPlayer(deckOfCards, true);
+                  }
+                },
+              );
+            }
+          },
+        );
       },
     ),
   );
