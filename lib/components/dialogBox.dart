@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 import 'cardBuilder.dart';
 
-showCardDialog(
+
+///display the parsed joker Content popUp
+showJokerSelectionContent(
     BuildContext context, double height, double width, CardDetail currentCard) {
   return showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
       return Dialog(
@@ -13,13 +16,14 @@ showCardDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: dialogContentJoker(context, height, width, currentCard),
+        child: jokerSelectionContent(context, height, width, currentCard),
       );
     },
   );
 }
-
-dialogContentJoker(
+/// A dialog Content pop-up triggered when the Whot 20
+/// has been played. Reveals all the available shapes in a card deck
+jokerSelectionContent(
     BuildContext context, double height, double width, CardDetail currentCard) {
   return Material(
     elevation: 150,
@@ -50,6 +54,9 @@ dialogContentJoker(
     ),
   );
 }
+
+/// return a selectable Card that changes the value of the
+/// current card shape
 
 Padding showCard(BuildContext context, double height, double width,
     String shape, CardDetail currentCard) {

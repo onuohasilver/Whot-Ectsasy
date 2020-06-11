@@ -4,24 +4,23 @@ import 'package:whot/components/cardBuilder.dart';
 
 import 'appProvider.dart';
 
-Widget buildItem(
-    BuildContext context,
-    double height,
-    double width,
-    int index,
-    List<CardDetail> currentPlayerCards,
-    List<CardDetail> playedCards,
-    Data appData,
-    _listKey,
-    List<CardDetail> deckOfCards,
-    List<CardDetail> opponentPlayerCards,
-    ScrollController scrollController,
-    opponentListKey) {
+/// builds the widget in a ListView
+Widget buildCurrentPlayerCards(
+  BuildContext context,
+  double height,
+  double width,
+  int index,
+  List<CardDetail> currentPlayerCards,
+  List<CardDetail> playedCards,
+  Data appData,
+  List<CardDetail> deckOfCards,
+  List<CardDetail> opponentPlayerCards,
+  ScrollController scrollController,
+) {
   List<int> playable = appData.playableIndexes;
   CardDetail currentCard = appData.currentCard;
 
   return LongPressDraggable(
-    hapticFeedbackOnStart: true,
     data: currentPlayerCards[index],
     feedback: SizedBox(
         height: height * .3,
@@ -32,6 +31,9 @@ Widget buildItem(
             number: currentPlayerCards[index].number,
             shape: currentPlayerCards[index].shape)),
     childWhenDragging: Container(),
+    onDragCompleted: () {
+      //TODO: Add  a drag completed function.
+    },
     child: DragTarget(
       onWillAccept: (CardDetail cardDetail) {
         print(cardDetail.shape);

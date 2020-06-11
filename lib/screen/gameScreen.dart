@@ -26,7 +26,7 @@ class _GameScreenState extends State<GameScreen>
   }
 
   Data appData;
-  ScrollController scrollController = ScrollController();
+
   List<CardDetail> currentPlayerCards;
   List<CardDetail> opponentPlayerCards;
   List<CardDetail> playedCards;
@@ -34,6 +34,8 @@ class _GameScreenState extends State<GameScreen>
   CardDetail currentCard;
   int rangeLength = 6;
   int code;
+  bool opponentTurn = false;
+  ScrollController scrollController = ScrollController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   final GlobalKey<AnimatedListState> _listKeyOpponent = GlobalKey();
 
@@ -112,6 +114,7 @@ class _GameScreenState extends State<GameScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  Text('$opponentTurn'),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -170,27 +173,47 @@ class _GameScreenState extends State<GameScreen>
                             EdgeInsets.only(left: 5, top: 1, right: width * .1),
                         child: DragTarget(
                           onAccept: (CardDetail cardDetail) {
+                            ///Handle CurrentPlayer Card Playing task
                             appData.playSelectedCard(cardDetail);
                             currentPlayerCards.removeAt(
                                 currentPlayerCards.indexOf(cardDetail));
                             appData.specialCardCheck(
-                                context, height, width, false);
+                                context, height, width, true);
+                            setState(() {
+                              opponentTurn = true;
+                            });
+
+                            ///Handle Opponent Card Playing task
+                            print('Checking Opponents');
                             appData.checkOpponentsCards();
-                            if (appData.playableIndexes.isEmpty) {
+
+                            if (appData.playableIndexes.isEmpty &&
+                                opponentTurn) {
+                              print('non playable');
                               appData.opponentGotoMarket(deckOfCards);
+                              setState(() {
+                                opponentTurn = false;
+                              });
                             }
 
-                            if (appData.playableCards.isNotEmpty) {
+                            if (appData.playableCards.isNotEmpty &&
+                                opponentTurn) {
+                              print('found playable');
                               appData.playCards(
                                   context, height, width, appData, deckOfCards);
                               appData.specialCardCheck(
                                   context, height, width, false);
+                              setState(() {
+                                opponentTurn = false;
+                              });
                             }
+                            print('never entered Loop');
                           },
                           onWillAccept: (CardDetail cardDetail) {
-                            if (cardDetail.shape == currentCard.shape ||
-                                cardDetail.number == currentCard.number ||
-                                cardDetail.number == 20) {
+                            if (!opponentTurn &
+                                (cardDetail.shape == currentCard.shape ||
+                                    cardDetail.number == currentCard.number ||
+                                    cardDetail.number == 20)) {
                               return true;
                             } else {
                               return false;
@@ -235,19 +258,18 @@ class _GameScreenState extends State<GameScreen>
                                   BuildContext context,
                                   int index,
                                 ) {
-                                  return buildItem(
-                                      context,
-                                      height,
-                                      width,
-                                      index,
-                                      currentPlayerCards,
-                                      playedCards,
-                                      appData,
-                                      _listKey,
-                                      deckOfCards,
-                                      opponentPlayerCards,
-                                      scrollController,
-                                      _listKeyOpponent);
+                                  return buildCurrentPlayerCards(
+                                    context,
+                                    height,
+                                    width,
+                                    index,
+                                    currentPlayerCards,
+                                    playedCards,
+                                    appData,
+                                    deckOfCards,
+                                    opponentPlayerCards,
+                                    scrollController,
+                                  );
                                 },
                               );
                             },

@@ -1,9 +1,11 @@
 import 'dart:math';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
 
+///builds a card Object with the specified shape
+///using Icons gotten from FontAwesome Icons as reference
+///for the shape images
 class CardBuilder extends StatelessWidget {
   const CardBuilder(
       {Key key,
@@ -32,7 +34,7 @@ class CardBuilder extends StatelessWidget {
       'circle': Icons.brightness_1,
       'joker': buildWhotCenter(
         Colors.red[900],
-        height*2.5,
+        height * 2.5,
         width,
         false,
       ),
@@ -80,6 +82,7 @@ class CardBuilder extends StatelessWidget {
   }
 }
 
+/// Creates a miniColumn of a number and Shape of the parsed card detail
 class MiniColumn extends StatelessWidget {
   const MiniColumn(
       {Key key,
@@ -104,7 +107,7 @@ class MiniColumn extends StatelessWidget {
       'star': Icons.star,
       'triangle': FontAwesomeIcons.angleUp,
       'circle': Icons.brightness_1,
-      'joker':''
+      'joker': ''
     };
     return Padding(
       padding: top
@@ -123,9 +126,12 @@ class MiniColumn extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                     color: number != 0 ? Colors.red[900] : Colors.transparent),
               ),
-              shape=='joker'?Container():FaIcon(shapes[shape],
-                  size: height * .02,
-                  color: number != 0 ? Colors.red[900] : Colors.transparent),
+              shape == 'joker'
+                  ? Container()
+                  : FaIcon(shapes[shape],
+                      size: height * .02,
+                      color:
+                          number != 0 ? Colors.red[900] : Colors.transparent),
             ],
           )
         ],
@@ -183,6 +189,7 @@ class DummyCard extends StatelessWidget {
   }
 }
 
+/// Create a Centered Whot Text
 Center buildWhotCenter(
   Color color,
   double height,

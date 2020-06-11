@@ -40,13 +40,14 @@ class _StartGameState extends State<StartGame> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             RaisedButton(
-                color: Colors.brown ,
+                color: Colors.brown,
                 child: Text(
                   'Play!',
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () {
                   appData.createPlayerCards();
+                  
                   appData
                       .playSelectedCard(getSingleCard(appData.entireCardDeck));
 

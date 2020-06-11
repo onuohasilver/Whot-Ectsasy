@@ -23,19 +23,18 @@ class Data extends ChangeNotifier {
 
   List<CardDetail> playableCards = [];
   List<int> playableIndexes = [];
-  bool opponentTurn = false;
 
+  ///Assigns six cards apiece to each player
+  ///from the card deck and removes the assigned cards
+  ///from the unplayed deck.
+  ///this is randomly done
   createPlayerCards() {
     currentPlayerCards = getRandomCards(entireCardDeck);
     opponentPlayerCards = getRandomCards(entireCardDeck);
     notifyListeners();
   }
-
-  void changeTurn() {
-    opponentTurn = !opponentTurn;
-    notifyListeners();
-  }
-
+  ///adds a single randomly selected card to a specified player's 
+  ///unplayed card stack
   void addCardToPlayer(List<CardDetail> cardStack, bool opponent) {
     CardDetail singleCard = getSingleCard(cardStack);
     opponent
@@ -43,29 +42,39 @@ class Data extends ChangeNotifier {
         : currentPlayerCards.insert(0, singleCard);
     notifyListeners();
   }
-
+  ///plays the selected card by adding it to the deck of played cards
+  ///and changing the currentCard to the card that was last played
   void playSelectedCard(CardDetail selectedCard) {
     currentCard = selectedCard;
     playedCards.add(selectedCard);
     notifyListeners();
   }
-
+  ///Changes the currentCard to the selected card
+  ///this is commonly used in the case of a selection
+  ///when the Joker 20 card has been played
   void updateCurrentCard(CardDetail selectedCard) {
     currentCard = selectedCard;
     notifyListeners();
   }
-
+  ///Generates a list of the playable cards owned by the opponent
   void getPlayable(CardDetail playableCard, int playableIndex) {
     playableCards.add(playableCard);
     playableIndexes.add(playableIndex);
     notifyListeners();
   }
-
+  ///clears the generated list of opponnent playable cards and 
+  ///gets ready for a new round
   void clearPlayable() {
     playableIndexes = [];
     notifyListeners();
   }
 
+  ///check if the played card is a special Card
+  ///and carries out attached special action if
+  ///it is one.
+  ///A card 20 triggers a popUp to select current card of choice
+  ///A card 14 adds a new card to the opponent stack
+  ///A card 2 adds two new cards to the opponent Stack
   void specialCardCheck(
       BuildContext context, double height, double width, bool opponent) {
     if (currentCard.number == 14) {
@@ -77,11 +86,14 @@ class Data extends ChangeNotifier {
       }
     }
     if (currentCard.number == 20) {
-      showCardDialog(context, height, width,currentCard);
+      showJokerSelectionContent(context, height, width, currentCard);
     }
     notifyListeners();
   }
 
+  ///Check if the opponent has any card to play
+  /// by iterating through the cards and keeping
+  /// track of all available playable cards
   void checkOpponentsCards() {
     for (CardDetail card in opponentPlayerCards) {
       if (currentCard.number == card.number ||
@@ -91,7 +103,8 @@ class Data extends ChangeNotifier {
     }
     notifyListeners();
   }
-
+  ///initiates the sequence required to play a card and 
+  ///remove it from the appropriate deck
   void playCards(BuildContext context, double height, double width,
       Data appData, List<CardDetail> deckOfCards) {
     List<int> playable = playableIndexes;
@@ -108,9 +121,10 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///Adds a card from the unplayed deck of cards
+  ///to the stack of the opponents cards
   opponentGotoMarket(List<CardDetail> deckOfCards) {
     addCardToPlayer(deckOfCards, true);
     notifyListeners();
-    
   }
 }
