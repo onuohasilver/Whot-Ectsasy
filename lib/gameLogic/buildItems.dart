@@ -37,7 +37,8 @@ Widget buildCurrentPlayerCards(
     child: DragTarget(
       onWillAccept: (CardDetail cardDetail) {
         print(cardDetail.shape);
-        if (cardDetail.shape == 'circle' || cardDetail.number == 3) {
+        if (cardDetail.shape == deckOfCards.first.shape ||
+            cardDetail.number == deckOfCards.first.number) {
           return true;
         } else {
           return false;
@@ -96,7 +97,6 @@ Widget buildOpponentPlayerCards(
     List<CardDetail> opponentPlayerCards,
     List<CardDetail> playedCards,
     Data appData,
-    opponentListKey,
     CardDetail currentCard,
     List<CardDetail> deckOfCards) {
   return CardBuilder(

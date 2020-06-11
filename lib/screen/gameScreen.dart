@@ -6,6 +6,7 @@ import 'package:whot/collection/cards.dart';
 import 'package:whot/components/customWidgets.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'package:whot/gameLogic/buildItems.dart';
+import 'package:whot/constants.dart';
 
 class GameScreen extends StatefulWidget {
   @override
@@ -17,7 +18,15 @@ class _GameScreenState extends State<GameScreen>
   @override
   void initState() {
     super.initState();
-
+    animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 200),
+    );
+    _animation =
+        ColorTween(begin:Colors.transparent,end: Colors.lightGreenAccent).animate(animationController)
+          ..addListener(() {
+            setState(() {});
+          });
     SystemChrome.setPreferredOrientations(
       [
         DeviceOrientation.landscapeRight,
@@ -27,7 +36,8 @@ class _GameScreenState extends State<GameScreen>
   }
 
   Data appData;
-
+  AnimationController animationController;
+  Animation _animation;
   List<CardDetail> currentPlayerCards;
   List<CardDetail> opponentPlayerCards;
   List<CardDetail> playedCards;
@@ -54,61 +64,72 @@ class _GameScreenState extends State<GameScreen>
 
     return SafeArea(
       child: Scaffold(
+        //Total Game Background Base
         body: Container(
           height: height,
           width: width,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/bg.jpg'), fit: BoxFit.cover)),
+          decoration: kBackgroundImage,
+          
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Stack(
-                overflow: Overflow.visible,
-                fit: StackFit.loose,
-                children: [
-                  DummyCard(
-                    height: height * 3.5,
-                    width: width * 1.5,
-                    large: true,
-                    color: Colors.red.withOpacity(.7),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4.0, top: 5),
-                    child: DummyCard(
+              //Stack of Unplayed Cards
+              Container(
+                  //Animate Border Color when there is a go to market call
+                decoration: BoxDecoration(
+                    border: Border.all(width: 6, color: _animation.value),
+                    borderRadius: BorderRadius.circular(10)),
+                child: Stack(
+                  overflow: Overflow.visible,
+                  fit: StackFit.loose,
+                  children: [
+                    DummyCard(
                       height: height * 3.5,
                       width: width * 1.5,
                       large: true,
-                      color: Colors.red[800],
+                      color: Colors.red.withOpacity(.7),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0, top: 10),
-                    child: Draggable(
-                      data: CardDetail('circle', 3),
-                      feedback: SizedBox(
-                        height: height * .3,
-                        width: width * .12,
-                        child: CardBuilder(
-                            height: height,
-                            width: width,
-                            number: deckOfCards.first.number,
-                            shape: deckOfCards.first.shape),
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0, top: 5),
                       child: DummyCard(
                         height: height * 3.5,
                         width: width * 1.5,
-                        color: Colors.red[900].withOpacity(.5),
                         large: true,
-                        onTap: () {
-                          scrollController.jumpTo(0.0);
-                          appData.addCardToPlayer(deckOfCards, true);
-                        },
+                        color: Colors.red[800],
                       ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0, top: 10),
+                      child: Draggable(
+                        data: CardDetail(
+                            deckOfCards.first.shape, deckOfCards.first.number),
+                        onDragCompleted: () {
+                          animationController.reset();
+                        },
+                        feedback: SizedBox(
+                          height: height * .3,
+                          width: width * .12,
+                          child: CardBuilder(
+                              height: height,
+                              width: width,
+                              number: deckOfCards.first.number,
+                              shape: deckOfCards.first.shape),
+                        ),
+                        child: DummyCard(
+                          height: height * 3.5,
+                          width: width * 1.5,
+                          color: Colors.red[900].withOpacity(.5),
+                          large: true,
+                          onTap: () {
+                            scrollController.jumpTo(0.0);
+                            appData.addCardToPlayer(deckOfCards, false);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(width: width * .03),
               Column(
@@ -121,6 +142,7 @@ class _GameScreenState extends State<GameScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
+                        //Opponent Unplayed Cards Deck
                         Container(
                           height: height * .2,
                           width: width * .5,
@@ -138,7 +160,6 @@ class _GameScreenState extends State<GameScreen>
                                 opponentPlayerCards,
                                 playedCards,
                                 appData,
-                                _listKeyOpponent,
                                 currentCard,
                                 deckOfCards,
                               );
@@ -146,6 +167,7 @@ class _GameScreenState extends State<GameScreen>
                           ),
                         ),
                         SizedBox(width: width * .03),
+                        //Opponent Avatar Image
                         Avatar(width: width),
                       ],
                     ),
@@ -182,6 +204,7 @@ class _GameScreenState extends State<GameScreen>
                             if (appData.playableIndexes.isEmpty &&
                                 opponentTurn) {
                               print('non playable');
+                              animationController.repeat();
                               appData.opponentGotoMarket(deckOfCards);
                               setState(() {
                                 opponentTurn = false;
@@ -193,7 +216,7 @@ class _GameScreenState extends State<GameScreen>
                               print('found playable');
                               appData.playCards(
                                   context, height, width, appData, deckOfCards);
-                              
+
                               setState(() {
                                 opponentTurn = false;
                               });
