@@ -33,7 +33,8 @@ class Data extends ChangeNotifier {
     opponentPlayerCards = getRandomCards(entireCardDeck);
     notifyListeners();
   }
-  ///adds a single randomly selected card to a specified player's 
+
+  ///adds a single randomly selected card to a specified player's
   ///unplayed card stack
   void addCardToPlayer(List<CardDetail> cardStack, bool opponent) {
     CardDetail singleCard = getSingleCard(cardStack);
@@ -42,6 +43,7 @@ class Data extends ChangeNotifier {
         : currentPlayerCards.insert(0, singleCard);
     notifyListeners();
   }
+
   ///plays the selected card by adding it to the deck of played cards
   ///and changing the currentCard to the card that was last played
   void playSelectedCard(CardDetail selectedCard) {
@@ -49,6 +51,7 @@ class Data extends ChangeNotifier {
     playedCards.add(selectedCard);
     notifyListeners();
   }
+
   ///Changes the currentCard to the selected card
   ///this is commonly used in the case of a selection
   ///when the Joker 20 card has been played
@@ -56,13 +59,15 @@ class Data extends ChangeNotifier {
     currentCard = selectedCard;
     notifyListeners();
   }
+
   ///Generates a list of the playable cards owned by the opponent
   void getPlayable(CardDetail playableCard, int playableIndex) {
     playableCards.add(playableCard);
     playableIndexes.add(playableIndex);
     notifyListeners();
   }
-  ///clears the generated list of opponnent playable cards and 
+
+  ///clears the generated list of opponnent playable cards and
   ///gets ready for a new round
   void clearPlayable() {
     playableIndexes = [];
@@ -103,7 +108,8 @@ class Data extends ChangeNotifier {
     }
     notifyListeners();
   }
-  ///initiates the sequence required to play a card and 
+
+  ///initiates the sequence required to play a card and
   ///remove it from the appropriate deck
   void playCards(BuildContext context, double height, double width,
       Data appData, List<CardDetail> deckOfCards) {
@@ -114,7 +120,7 @@ class Data extends ChangeNotifier {
       () {
         playSelectedCard(opponentPlayerCards[playable.last]);
         opponentPlayerCards.removeAt(playable.last);
-
+        appData.specialCardCheck(context, height, width, false);
         clearPlayable();
       },
     );

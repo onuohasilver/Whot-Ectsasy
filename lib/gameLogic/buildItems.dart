@@ -89,7 +89,7 @@ Widget buildCurrentPlayerCards(
   );
 }
 
-Widget buildItemOpponent(
+Widget buildOpponentPlayerCards(
     double height,
     double width,
     int index,

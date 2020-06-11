@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:whot/components/cardBuilder.dart';
 import 'package:whot/collection/cards.dart';
+import 'package:whot/components/customWidgets.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'package:whot/gameLogic/buildItems.dart';
 
@@ -130,7 +131,7 @@ class _GameScreenState extends State<GameScreen>
                             itemCount: opponentPlayerCards.length,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (BuildContext context, int index) {
-                              return buildItemOpponent(
+                              return buildOpponentPlayerCards(
                                 height,
                                 width,
                                 index,
@@ -145,16 +146,7 @@ class _GameScreenState extends State<GameScreen>
                           ),
                         ),
                         SizedBox(width: width * .03),
-                        Material(
-                          elevation: 15,
-                          color: Colors.transparent,
-                          shape: CircleBorder(),
-                          child: CircleAvatar(
-                            minRadius: width * .035,
-                            child: Icon(Icons.person),
-                            backgroundColor: Colors.green[900].withOpacity(.8),
-                          ),
-                        )
+                        Avatar(width: width),
                       ],
                     ),
                   ),
@@ -201,8 +193,7 @@ class _GameScreenState extends State<GameScreen>
                               print('found playable');
                               appData.playCards(
                                   context, height, width, appData, deckOfCards);
-                              appData.specialCardCheck(
-                                  context, height, width, false);
+                              
                               setState(() {
                                 opponentTurn = false;
                               });
@@ -244,47 +235,34 @@ class _GameScreenState extends State<GameScreen>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Container(
-                          height: height * .3,
-                          width: width * .5,
-                          child: DragTarget(
-                            builder: (context, listOne, listTwo) {
-                              return ListView.builder(
-                                key: _listKey,
-                                physics: BouncingScrollPhysics(),
-                                controller: scrollController,
-                                itemCount: currentPlayerCards.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (
-                                  BuildContext context,
-                                  int index,
-                                ) {
-                                  return buildCurrentPlayerCards(
-                                    context,
-                                    height,
-                                    width,
-                                    index,
-                                    currentPlayerCards,
-                                    playedCards,
-                                    appData,
-                                    deckOfCards,
-                                    opponentPlayerCards,
-                                    scrollController,
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ),
+                            height: height * .3,
+                            width: width * .5,
+                            child: ListView.builder(
+                              key: _listKey,
+                              physics: BouncingScrollPhysics(),
+                              controller: scrollController,
+                              itemCount: currentPlayerCards.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (
+                                BuildContext context,
+                                int index,
+                              ) {
+                                return buildCurrentPlayerCards(
+                                  context,
+                                  height,
+                                  width,
+                                  index,
+                                  currentPlayerCards,
+                                  playedCards,
+                                  appData,
+                                  deckOfCards,
+                                  opponentPlayerCards,
+                                  scrollController,
+                                );
+                              },
+                            )),
                         SizedBox(width: width * .03),
-                        Material(
-                          elevation: 15,
-                          color: Colors.transparent,
-                          shape: CircleBorder(),
-                          child: CircleAvatar(
-                              minRadius: width * .035,
-                              child: Icon(Icons.person),
-                              backgroundColor: Colors.blue[900].withOpacity(1)),
-                        )
+                        Avatar(width: width)
                       ],
                     ),
                   ),
