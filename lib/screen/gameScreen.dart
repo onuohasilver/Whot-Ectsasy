@@ -23,10 +23,11 @@ class _GameScreenState extends State<GameScreen>
       duration: Duration(milliseconds: 200),
     );
     _animation =
-        ColorTween(begin:Colors.transparent,end: Colors.lightGreenAccent).animate(animationController)
-          ..addListener(() {
-            setState(() {});
-          });
+        ColorTween(begin: Colors.transparent, end: Colors.white)
+            .animate(animationController)
+              ..addListener(() {
+                setState(() {});
+              });
     SystemChrome.setPreferredOrientations(
       [
         DeviceOrientation.landscapeRight,
@@ -69,14 +70,13 @@ class _GameScreenState extends State<GameScreen>
           height: height,
           width: width,
           decoration: kBackgroundImage,
-          
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               //Stack of Unplayed Cards
               Container(
-                  //Animate Border Color when there is a go to market call
+                //Animate Border Color when there is a go to market call
                 decoration: BoxDecoration(
                     border: Border.all(width: 6, color: _animation.value),
                     borderRadius: BorderRadius.circular(10)),
@@ -104,9 +104,7 @@ class _GameScreenState extends State<GameScreen>
                       child: Draggable(
                         data: CardDetail(
                             deckOfCards.first.shape, deckOfCards.first.number),
-                        onDragCompleted: () {
-                          animationController.reset();
-                        },
+                        
                         feedback: SizedBox(
                           height: height * .3,
                           width: width * .12,
@@ -191,8 +189,8 @@ class _GameScreenState extends State<GameScreen>
                             appData.playSelectedCard(cardDetail);
                             currentPlayerCards.removeAt(
                                 currentPlayerCards.indexOf(cardDetail));
-                            appData.specialCardCheck(
-                                context, height, width, true);
+                            appData.specialCardCheck(context, height, width,
+                                true, animationController,opponentPlayerCards.length);
                             setState(() {
                               opponentTurn = true;
                             });
@@ -214,8 +212,8 @@ class _GameScreenState extends State<GameScreen>
                             if (appData.playableCards.isNotEmpty &&
                                 opponentTurn) {
                               print('found playable');
-                              appData.playCards(
-                                  context, height, width, appData, deckOfCards);
+                              appData.playCards(context, height, width, appData,
+                                  deckOfCards, animationController);
 
                               setState(() {
                                 opponentTurn = false;
@@ -271,17 +269,17 @@ class _GameScreenState extends State<GameScreen>
                                 int index,
                               ) {
                                 return buildCurrentPlayerCards(
-                                  context,
-                                  height,
-                                  width,
-                                  index,
-                                  currentPlayerCards,
-                                  playedCards,
-                                  appData,
-                                  deckOfCards,
-                                  opponentPlayerCards,
-                                  scrollController,
-                                );
+                                    context,
+                                    height,
+                                    width,
+                                    index,
+                                    currentPlayerCards,
+                                    playedCards,
+                                    appData,
+                                    deckOfCards,
+                                    opponentPlayerCards,
+                                    scrollController,
+                                    animationController);
                               },
                             )),
                         SizedBox(width: width * .03),

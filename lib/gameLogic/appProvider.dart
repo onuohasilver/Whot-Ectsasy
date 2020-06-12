@@ -78,16 +78,23 @@ class Data extends ChangeNotifier {
   ///and carries out attached special action if
   ///it is one.
   ///A card 20 triggers a popUp to select current card of choice
-  ///A card 14 adds a new card to the opponent stack
-  ///A card 2 adds two new cards to the opponent Stack
-  void specialCardCheck(
-      BuildContext context, double height, double width, bool opponent) {
+  ///A card 14 prompts the player to add a Card to his UnplayedStack
+  ///A card 2 prompts the player to add two cards to his Unpla
+  //TODO: Resolve Special Card Checking
+  void specialCardCheck(BuildContext context, double height, double width,
+      bool opponent, AnimationController animation, int length) {
     if (currentCard.number == 14) {
-      addCardToPlayer(entireCardDeck, opponent);
+      animation.repeat();
+      if (length == (opponent ? opponentPlayerCards.length : currentPlayerCards.length)) {
+        animation.reset();
+      }
     }
     if (currentCard.number == 2) {
-      for (int count = 0; count < 2; count++) {
-        addCardToPlayer(entireCardDeck, opponent);
+      animation.repeat();
+      int playersTotalCard =
+          opponent ? opponentPlayerCards.length : currentPlayerCards.length;
+      if (playersTotalCard == (playersTotalCard + 2)) {
+        animation.reset();
       }
     }
     if (currentCard.number == 20) {
@@ -112,7 +119,7 @@ class Data extends ChangeNotifier {
   ///initiates the sequence required to play a card and
   ///remove it from the appropriate deck
   void playCards(BuildContext context, double height, double width,
-      Data appData, List<CardDetail> deckOfCards) {
+      Data appData, List<CardDetail> deckOfCards, animation) {
     List<int> playable = playableIndexes;
 
     Future.delayed(
@@ -120,7 +127,8 @@ class Data extends ChangeNotifier {
       () {
         playSelectedCard(opponentPlayerCards[playable.last]);
         opponentPlayerCards.removeAt(playable.last);
-        appData.specialCardCheck(context, height, width, false);
+        appData.specialCardCheck(context, height, width, false, animation,
+            currentPlayerCards.length);
         clearPlayable();
       },
     );

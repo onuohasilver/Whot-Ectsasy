@@ -6,17 +6,17 @@ import 'appProvider.dart';
 
 /// builds the widget in a ListView
 Widget buildCurrentPlayerCards(
-  BuildContext context,
-  double height,
-  double width,
-  int index,
-  List<CardDetail> currentPlayerCards,
-  List<CardDetail> playedCards,
-  Data appData,
-  List<CardDetail> deckOfCards,
-  List<CardDetail> opponentPlayerCards,
-  ScrollController scrollController,
-) {
+    BuildContext context,
+    double height,
+    double width,
+    int index,
+    List<CardDetail> currentPlayerCards,
+    List<CardDetail> playedCards,
+    Data appData,
+    List<CardDetail> deckOfCards,
+    List<CardDetail> opponentPlayerCards,
+    ScrollController scrollController,
+    AnimationController animation) {
   List<int> playable = appData.playableIndexes;
   CardDetail currentCard = appData.currentCard;
 
@@ -66,7 +66,8 @@ Widget buildCurrentPlayerCards(
               currentPlayerCards.removeAt(index);
 
               Future.delayed(Duration(seconds: 1), () {
-                appData.specialCardCheck(context, height, width, true);
+                appData.specialCardCheck(context, height, width, true,
+                    animation, opponentPlayerCards.length);
               });
 
               Future.delayed(
@@ -74,9 +75,10 @@ Widget buildCurrentPlayerCards(
                 () async {
                   appData.checkOpponentsCards();
                   if (playable.isNotEmpty) {
-                    appData.playCards(
-                        context, height, width, appData, deckOfCards);
-                    appData.specialCardCheck(context, height, width, false);
+                    appData.playCards(context, height, width, appData,
+                        deckOfCards, animation);
+                    appData.specialCardCheck(context, height, width, false,
+                        animation, currentPlayerCards.length);
                   } else {
                     appData.addCardToPlayer(deckOfCards, true);
                   }
