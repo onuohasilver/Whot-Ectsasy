@@ -6,6 +6,7 @@ import 'package:whot/components/buttons.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'package:whot/screen/SinglePlayer.dart';
 import 'package:whot/components/cardBuilder.dart';
+import 'package:whot/screen/loginPage.dart';
 
 class StartGame extends StatefulWidget {
   @override
@@ -66,7 +67,16 @@ class _StartGameState extends State<StartGame> {
               width: width,
               label: 'MULTIPLAYER',
               appData: appData,
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LoginScreen();
+                      },
+                    ),
+                  );
+              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
