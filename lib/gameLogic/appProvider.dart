@@ -84,18 +84,10 @@ class Data extends ChangeNotifier {
   void specialCardCheck(BuildContext context, double height, double width,
       bool opponent, AnimationController animation, int length) {
     if (currentCard.number == 14) {
-      animation.repeat();
-      if (length == (opponent ? opponentPlayerCards.length : currentPlayerCards.length)) {
-        animation.reset();
-      }
+      animation.repeat(); 
     }
     if (currentCard.number == 2) {
       animation.repeat();
-      int playersTotalCard =
-          opponent ? opponentPlayerCards.length : currentPlayerCards.length;
-      if (playersTotalCard == (playersTotalCard + 2)) {
-        animation.reset();
-      }
     }
     if (currentCard.number == 20) {
       showJokerSelectionContent(context, height, width, currentCard);
