@@ -22,12 +22,11 @@ class _GameScreenState extends State<GameScreen>
       vsync: this,
       duration: Duration(milliseconds: 200),
     );
-    _animation =
-        ColorTween(begin: Colors.transparent, end: Colors.white)
-            .animate(animationController)
-              ..addListener(() {
-                setState(() {});
-              });
+    _animation = ColorTween(begin: Colors.transparent, end: Colors.white)
+        .animate(animationController)
+          ..addListener(() {
+            setState(() {});
+          });
     SystemChrome.setPreferredOrientations(
       [
         DeviceOrientation.landscapeRight,
@@ -44,7 +43,7 @@ class _GameScreenState extends State<GameScreen>
   List<CardDetail> playedCards;
   List<CardDetail> deckOfCards;
   CardDetail currentCard;
-  int rangeLength = 6;
+
   int code;
   bool opponentTurn = false;
   ScrollController scrollController = ScrollController();
@@ -104,7 +103,6 @@ class _GameScreenState extends State<GameScreen>
                       child: Draggable(
                         data: CardDetail(
                             deckOfCards.first.shape, deckOfCards.first.number),
-                        
                         feedback: SizedBox(
                           height: height * .3,
                           width: width * .12,
@@ -114,6 +112,14 @@ class _GameScreenState extends State<GameScreen>
                               number: deckOfCards.first.number,
                               shape: deckOfCards.first.shape),
                         ),
+                        onDragCompleted: () {
+                          appData.cardsPicked++;
+                          if (appData.cardsPicked ==
+                              appData.cardsPickedTarget) {
+                            animationController.reset();
+                            appData.resetCardsPicked();
+                          }
+                        },
                         child: DummyCard(
                           height: height * 3.5,
                           width: width * 1.5,
@@ -134,7 +140,8 @@ class _GameScreenState extends State<GameScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text('$opponentTurn'),
+                  Text(
+                      'Cards Picked: ${appData.cardsPicked} Cards Picked Targets: ${appData.cardsPickedTarget}'),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -189,8 +196,14 @@ class _GameScreenState extends State<GameScreen>
                             appData.playSelectedCard(cardDetail);
                             currentPlayerCards.removeAt(
                                 currentPlayerCards.indexOf(cardDetail));
-                            appData.specialCardCheck(context, height, width,
-                                true, animationController,opponentPlayerCards.length);
+                            appData.specialCardCheck(
+                                context,
+                                height,
+                                width,
+                                true,
+                                animationController,
+                                opponentPlayerCards.length);
+
                             setState(() {
                               opponentTurn = true;
                             });
@@ -283,7 +296,10 @@ class _GameScreenState extends State<GameScreen>
                               },
                             )),
                         SizedBox(width: width * .03),
-                        Avatar(width: width)
+                        Avatar(
+                          width: width,
+                          onTap: appData.dummyCards(),
+                        )
                       ],
                     ),
                   ),

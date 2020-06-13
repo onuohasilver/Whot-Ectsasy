@@ -18,16 +18,27 @@ class Data extends ChangeNotifier {
   List<CardDetail> opponentPlayerCards = [];
 
   List<CardDetail> playedCards = [];
-
+  int cardsPicked = 0;
+  int cardsPickedTarget = 0;
   CardDetail currentCard;
 
   List<CardDetail> playableCards = [];
   List<int> playableIndexes = [];
 
+  ///test and dummify
+  //TODO: delete this function
+  dummyCards(){
+    for(int x = 0;x<10;x++){
+    opponentPlayerCards.insert(0, CardDetail('cross', 2));   
+    }
+   
+  }
+
   ///Assigns six cards apiece to each player
   ///from the card deck and removes the assigned cards
   ///from the unplayed deck.
   ///this is randomly done
+  
   createPlayerCards() {
     currentPlayerCards = getRandomCards(entireCardDeck);
     opponentPlayerCards = getRandomCards(entireCardDeck);
@@ -85,9 +96,12 @@ class Data extends ChangeNotifier {
       bool opponent, AnimationController animation, int length) {
     if (currentCard.number == 14) {
       animation.repeat(); 
+      cardsPickedTarget=1;
     }
+    
     if (currentCard.number == 2) {
       animation.repeat();
+      cardsPickedTarget=2;
     }
     if (currentCard.number == 20) {
       showJokerSelectionContent(context, height, width, currentCard);
@@ -108,6 +122,11 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetCardsPicked(){
+    cardsPicked=0;
+    cardsPickedTarget=0;
+    notifyListeners();
+  }
   ///initiates the sequence required to play a card and
   ///remove it from the appropriate deck
   void playCards(BuildContext context, double height, double width,
