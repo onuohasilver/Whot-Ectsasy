@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:whot/collection/cards.dart';
+import 'package:whot/components/buttons.dart';
 import 'package:whot/gameLogic/appProvider.dart';
-import 'package:whot/screen/gameScreen.dart';
+import 'package:whot/screen/SinglePlayer.dart';
+import 'package:whot/components/cardBuilder.dart';
+import 'package:whot/screen/loginPage.dart';
 
 class StartGame extends StatefulWidget {
   @override
@@ -39,15 +42,14 @@ class _StartGameState extends State<StartGame> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
-                color: Colors.brown,
-                child: Text(
-                  'Play!',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onPressed: () {
+            buildWhotCenter(Colors.white, height * 6, width * 3, false),
+            LongMenuButton(
+                height: height,
+                width: width,
+                label: 'SINGLE PLAYER',
+                appData: appData,
+                onTap: () {
                   appData.createPlayerCards();
-                  
                   appData
                       .playSelectedCard(getSingleCard(appData.entireCardDeck));
 
@@ -60,6 +62,40 @@ class _StartGameState extends State<StartGame> {
                     ),
                   );
                 }),
+            LongMenuButton(
+              height: height,
+              width: width,
+              label: 'MULTIPLAYER',
+              appData: appData,
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LoginScreen();
+                      },
+                    ),
+                  );
+              },
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SmallMenuButton(
+                  height: height,
+                  width: width,
+                  icon: Icons.palette,
+                  onTap: () {},
+                ),
+                SmallMenuButton(
+              height: height,
+              width: width,
+              icon: Icons.indeterminate_check_box,
+              onTap: () {},
+            )
+              ],
+            ),
+            
           ],
         ),
       ),
