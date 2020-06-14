@@ -16,6 +16,7 @@ class Avatar extends StatelessWidget {
       color: Colors.transparent,
       shape: CircleBorder(),
       child: Material(
+        color: Colors.transparent,
         child: InkWell(
           onTap:onTap,
           child: CircleAvatar(

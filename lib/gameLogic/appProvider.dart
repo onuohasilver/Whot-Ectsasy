@@ -113,7 +113,7 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeTurn(opponent){
+  void changeTurn(bool opponent){
     opponent?opponentTurn=true:opponentTurn=false;
     print('Changed Turn to :$opponentTurn');
     notifyListeners();
@@ -158,7 +158,7 @@ class Data extends ChangeNotifier {
 
   ///Adds a card from the unplayed deck of cards
   ///to the stack of the opponents cards
-  opponentGotoMarket(List<CardDetail> deckOfCards) {
+  void opponentGotoMarket(List<CardDetail> deckOfCards) {
     addCardToPlayer(deckOfCards, true);
     notifyListeners();
   }
