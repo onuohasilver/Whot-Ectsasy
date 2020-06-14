@@ -21,16 +21,16 @@ class Data extends ChangeNotifier {
   int cardsPicked = 0;
   int cardsPickedTarget = 0;
   CardDetail currentCard;
-
+  bool opponentTurn=false;
   List<CardDetail> playableCards = [];
   List<int> playableIndexes = [];
 
   ///test and dummify
   //TODO: delete this function
   dummyCards(){
-    for(int x = 0;x<10;x++){
-    opponentPlayerCards.insert(0, CardDetail('cross', 2));   
-    }
+    // for(int x = 0;x<10;x++){
+    // opponentPlayerCards.insert(0, CardDetail('cross', 2));   
+    // }
    
   }
 
@@ -96,16 +96,26 @@ class Data extends ChangeNotifier {
       bool opponent, AnimationController animation, int length) {
     if (currentCard.number == 14) {
       animation.repeat(); 
+      cardsPicked=0;
       cardsPickedTarget=1;
+      changeTurn(opponent);
     }
     
     if (currentCard.number == 2) {
       animation.repeat();
+      cardsPicked=0;
       cardsPickedTarget=2;
+      changeTurn(opponent);
     }
     if (currentCard.number == 20) {
       showJokerSelectionContent(context, height, width, currentCard);
     }
+    notifyListeners();
+  }
+
+  void changeTurn(opponent){
+    opponent?opponentTurn=true:opponentTurn=false;
+    print('Changed Turn to :$opponentTurn');
     notifyListeners();
   }
 

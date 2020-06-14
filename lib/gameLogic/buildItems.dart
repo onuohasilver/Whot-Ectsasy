@@ -101,7 +101,7 @@ Widget buildOpponentPlayerCards(
     Data appData,
     CardDetail currentCard,
     List<CardDetail> deckOfCards) {
-  return CardBuilder(
+  return DummyCard(
     height: height,
     width: width,
     number: opponentPlayerCards[index].number,

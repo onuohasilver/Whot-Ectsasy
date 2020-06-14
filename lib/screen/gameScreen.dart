@@ -45,7 +45,7 @@ class _GameScreenState extends State<GameScreen>
   CardDetail currentCard;
 
   int code;
-  bool opponentTurn = false;
+
   ScrollController scrollController = ScrollController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   final GlobalKey<AnimatedListState> _listKeyOpponent = GlobalKey();
@@ -55,6 +55,7 @@ class _GameScreenState extends State<GameScreen>
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     appData = Provider.of<Data>(context);
+    bool opponentTurn = appData.opponentTurn;
     currentPlayerCards = appData.currentPlayerCards;
     currentPlayerCards.isEmpty ? appData.createPlayerCards() : code = 1;
     opponentPlayerCards = appData.opponentPlayerCards;
@@ -141,7 +142,8 @@ class _GameScreenState extends State<GameScreen>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                      'Cards Picked: ${appData.cardsPicked} Cards Picked Targets: ${appData.cardsPickedTarget}'),
+                      '''Cards Picked: ${appData.cardsPicked} Cards Picked Targets: ${appData.cardsPickedTarget}  Opponent's Turn: ${appData.opponentTurn}
+                       '''),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -204,35 +206,29 @@ class _GameScreenState extends State<GameScreen>
                                 animationController,
                                 opponentPlayerCards.length);
 
-                            setState(() {
-                              opponentTurn = true;
-                            });
+                            appData.changeTurn(true);
 
                             ///Handle Opponent Card Playing task
                             print('Checking Opponents');
                             appData.checkOpponentsCards();
-
-                            if (appData.playableIndexes.isEmpty &&
+                            print('Opponents Turn?? $opponentTurn');
+                            if (appData.playableIndexes.isEmpty &
                                 opponentTurn) {
+
                               print('non playable');
-                              animationController.repeat();
                               appData.opponentGotoMarket(deckOfCards);
-                              setState(() {
-                                opponentTurn = false;
-                              });
+                              appData.changeTurn(false);
                             }
 
-                            if (appData.playableCards.isNotEmpty &&
+                            if (appData.playableCards.isNotEmpty &
                                 opponentTurn) {
                               print('found playable');
                               appData.playCards(context, height, width, appData,
                                   deckOfCards, animationController);
-
-                              setState(() {
-                                opponentTurn = false;
-                              });
+                              appData.changeTurn(false);
                             }
-                            print('never entered Loop');
+
+                            print('never entered Loop $opponentTurn');
                           },
                           onWillAccept: (CardDetail cardDetail) {
                             if (!opponentTurn &
