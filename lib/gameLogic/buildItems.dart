@@ -104,6 +104,7 @@ Widget buildOpponentPlayerCards(
   return DummyCard(
     height: height,
     width: width,
+    large: false,
     number: opponentPlayerCards[index].number,
     shape: opponentPlayerCards[index].shape,
     onTap: () {},
