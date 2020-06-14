@@ -203,6 +203,8 @@ Center buildWhotCenter(
         Text(
           'Whot',
           style: GoogleFonts.cookie(
+              shadows:
+                  large ? null : [Shadow(blurRadius: 23.0, color: Colors.black)],
               color: color,
               fontSize: (large ?? false) ? height * .025 : height * .025),
         ),
@@ -211,6 +213,8 @@ Center buildWhotCenter(
           child: Text(
             'Whot',
             style: GoogleFonts.cookie(
+                shadows:
+                    large ? null : [Shadow(blurRadius: 23.0, color: Colors.black)],
                 color: color,
                 fontSize: (large ?? false) ? height * .025 : height * .025),
           ),

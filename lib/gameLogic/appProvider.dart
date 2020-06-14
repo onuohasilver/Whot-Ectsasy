@@ -18,16 +18,27 @@ class Data extends ChangeNotifier {
   List<CardDetail> opponentPlayerCards = [];
 
   List<CardDetail> playedCards = [];
-
+  int cardsPicked = 0;
+  int cardsPickedTarget = 0;
   CardDetail currentCard;
-
+  bool opponentTurn=false;
   List<CardDetail> playableCards = [];
   List<int> playableIndexes = [];
+
+  ///test and dummify
+  //TODO: delete this function
+  dummyCards(){
+    // for(int x = 0;x<10;x++){
+    // opponentPlayerCards.insert(0, CardDetail('cross', 2));   
+    // }
+   
+  }
 
   ///Assigns six cards apiece to each player
   ///from the card deck and removes the assigned cards
   ///from the unplayed deck.
   ///this is randomly done
+  
   createPlayerCards() {
     currentPlayerCards = getRandomCards(entireCardDeck);
     opponentPlayerCards = getRandomCards(entireCardDeck);
@@ -78,21 +89,33 @@ class Data extends ChangeNotifier {
   ///and carries out attached special action if
   ///it is one.
   ///A card 20 triggers a popUp to select current card of choice
-  ///A card 14 adds a new card to the opponent stack
-  ///A card 2 adds two new cards to the opponent Stack
-  void specialCardCheck(
-      BuildContext context, double height, double width, bool opponent) {
+  ///A card 14 prompts the player to add a Card to his UnplayedStack
+  ///A card 2 prompts the player to add two cards to his Unpla
+  //TODO: Resolve Special Card Checking
+  void specialCardCheck(BuildContext context, double height, double width,
+      bool opponent, AnimationController animation, int length) {
     if (currentCard.number == 14) {
-      addCardToPlayer(entireCardDeck, opponent);
+      animation.repeat(); 
+      cardsPicked=0;
+      cardsPickedTarget=1;
+      changeTurn(opponent);
     }
+    
     if (currentCard.number == 2) {
-      for (int count = 0; count < 2; count++) {
-        addCardToPlayer(entireCardDeck, opponent);
-      }
+      animation.repeat();
+      cardsPicked=0;
+      cardsPickedTarget=2;
+      changeTurn(opponent);
     }
     if (currentCard.number == 20) {
       showJokerSelectionContent(context, height, width, currentCard);
     }
+    notifyListeners();
+  }
+
+  void changeTurn(opponent){
+    opponent?opponentTurn=true:opponentTurn=false;
+    print('Changed Turn to :$opponentTurn');
     notifyListeners();
   }
 
@@ -109,10 +132,15 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
+  void resetCardsPicked(){
+    cardsPicked=0;
+    cardsPickedTarget=0;
+    notifyListeners();
+  }
   ///initiates the sequence required to play a card and
   ///remove it from the appropriate deck
   void playCards(BuildContext context, double height, double width,
-      Data appData, List<CardDetail> deckOfCards) {
+      Data appData, List<CardDetail> deckOfCards, animation) {
     List<int> playable = playableIndexes;
 
     Future.delayed(
@@ -120,7 +148,8 @@ class Data extends ChangeNotifier {
       () {
         playSelectedCard(opponentPlayerCards[playable.last]);
         opponentPlayerCards.removeAt(playable.last);
-        appData.specialCardCheck(context, height, width, false);
+        appData.specialCardCheck(context, height, width, false, animation,
+            currentPlayerCards.length);
         clearPlayable();
       },
     );

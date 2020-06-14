@@ -22,8 +22,8 @@ class _GameScreenState extends State<GameScreen>
       vsync: this,
       duration: Duration(milliseconds: 200),
     );
-    _animation =
-        ColorTween(begin:Colors.transparent,end: Colors.lightGreenAccent).animate(animationController)
+    _animation = ColorTween(begin: Colors.transparent, end: Colors.white)
+        .animate(animationController)
           ..addListener(() {
             setState(() {});
           });
@@ -43,9 +43,9 @@ class _GameScreenState extends State<GameScreen>
   List<CardDetail> playedCards;
   List<CardDetail> deckOfCards;
   CardDetail currentCard;
-  int rangeLength = 6;
+
   int code;
-  bool opponentTurn = false;
+
   ScrollController scrollController = ScrollController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
   final GlobalKey<AnimatedListState> _listKeyOpponent = GlobalKey();
@@ -55,6 +55,7 @@ class _GameScreenState extends State<GameScreen>
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     appData = Provider.of<Data>(context);
+    bool opponentTurn = appData.opponentTurn;
     currentPlayerCards = appData.currentPlayerCards;
     currentPlayerCards.isEmpty ? appData.createPlayerCards() : code = 1;
     opponentPlayerCards = appData.opponentPlayerCards;
@@ -69,14 +70,13 @@ class _GameScreenState extends State<GameScreen>
           height: height,
           width: width,
           decoration: kBackgroundImage,
-          
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               //Stack of Unplayed Cards
               Container(
-                  //Animate Border Color when there is a go to market call
+                //Animate Border Color when there is a go to market call
                 decoration: BoxDecoration(
                     border: Border.all(width: 6, color: _animation.value),
                     borderRadius: BorderRadius.circular(10)),
@@ -104,9 +104,6 @@ class _GameScreenState extends State<GameScreen>
                       child: Draggable(
                         data: CardDetail(
                             deckOfCards.first.shape, deckOfCards.first.number),
-                        onDragCompleted: () {
-                          animationController.reset();
-                        },
                         feedback: SizedBox(
                           height: height * .3,
                           width: width * .12,
@@ -116,6 +113,14 @@ class _GameScreenState extends State<GameScreen>
                               number: deckOfCards.first.number,
                               shape: deckOfCards.first.shape),
                         ),
+                        onDragCompleted: () {
+                          appData.cardsPicked++;
+                          if (appData.cardsPicked ==
+                              appData.cardsPickedTarget) {
+                            animationController.reset();
+                            appData.resetCardsPicked();
+                          }
+                        },
                         child: DummyCard(
                           height: height * 3.5,
                           width: width * 1.5,
@@ -136,7 +141,9 @@ class _GameScreenState extends State<GameScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text('$opponentTurn'),
+                  Text(
+                      '''Cards Picked: ${appData.cardsPicked} Cards Picked Targets: ${appData.cardsPickedTarget}  Opponent's Turn: ${appData.opponentTurn}
+                       '''),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -192,36 +199,36 @@ class _GameScreenState extends State<GameScreen>
                             currentPlayerCards.removeAt(
                                 currentPlayerCards.indexOf(cardDetail));
                             appData.specialCardCheck(
-                                context, height, width, true);
-                            setState(() {
-                              opponentTurn = true;
-                            });
+                                context,
+                                height,
+                                width,
+                                true,
+                                animationController,
+                                opponentPlayerCards.length);
+
+                            appData.changeTurn(true);
 
                             ///Handle Opponent Card Playing task
                             print('Checking Opponents');
                             appData.checkOpponentsCards();
-
-                            if (appData.playableIndexes.isEmpty &&
+                            print('Opponents Turn?? $opponentTurn');
+                            if (appData.playableIndexes.isEmpty &
                                 opponentTurn) {
+
                               print('non playable');
-                              animationController.repeat();
                               appData.opponentGotoMarket(deckOfCards);
-                              setState(() {
-                                opponentTurn = false;
-                              });
+                              appData.changeTurn(false);
                             }
 
-                            if (appData.playableCards.isNotEmpty &&
+                            if (appData.playableCards.isNotEmpty &
                                 opponentTurn) {
                               print('found playable');
-                              appData.playCards(
-                                  context, height, width, appData, deckOfCards);
-
-                              setState(() {
-                                opponentTurn = false;
-                              });
+                              appData.playCards(context, height, width, appData,
+                                  deckOfCards, animationController);
+                              appData.changeTurn(false);
                             }
-                            print('never entered Loop');
+
+                            print('never entered Loop $opponentTurn');
                           },
                           onWillAccept: (CardDetail cardDetail) {
                             if (!opponentTurn &
@@ -271,21 +278,24 @@ class _GameScreenState extends State<GameScreen>
                                 int index,
                               ) {
                                 return buildCurrentPlayerCards(
-                                  context,
-                                  height,
-                                  width,
-                                  index,
-                                  currentPlayerCards,
-                                  playedCards,
-                                  appData,
-                                  deckOfCards,
-                                  opponentPlayerCards,
-                                  scrollController,
-                                );
+                                    context,
+                                    height,
+                                    width,
+                                    index,
+                                    currentPlayerCards,
+                                    playedCards,
+                                    appData,
+                                    deckOfCards,
+                                    opponentPlayerCards,
+                                    scrollController,
+                                    animationController);
                               },
                             )),
                         SizedBox(width: width * .03),
-                        Avatar(width: width)
+                        Avatar(
+                          width: width,
+                          onTap: appData.dummyCards(),
+                        )
                       ],
                     ),
                   ),
