@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "39932327921",
+    "firebase_url": "https://whot-c3ed5.firebaseio.com",
+    "project_id": "whot-c3ed5",
+    "storage_bucket": "whot-c3ed5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39932327921:android:74dcef8a95ecc61719b650",
+        "android_client_info": {
+          "package_name": "com.rally.whot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39932327921-tmrvqhtqu827rotfdri8lsqcv9t25nfc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rally.whot",
+            "certificate_hash": "3223de88f6dfc4a47264afcaa21fb59ca49574f1"
+          }
+        },
+        {
+          "client_id": "39932327921-etpn8gb1tr86pl2ocd77nbd8si4j4i8l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqdeeQJpG0Mcfm_9aNhOUXij2klDdLHG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39932327921-etpn8gb1tr86pl2ocd77nbd8si4j4i8l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

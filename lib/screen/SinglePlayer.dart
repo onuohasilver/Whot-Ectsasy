@@ -141,9 +141,7 @@ class _GameScreenState extends State<GameScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                      '''Cards Picked: ${appData.cardsPicked} Cards Picked Targets: ${appData.cardsPickedTarget}  Opponent's Turn: ${appData.opponentTurn}
-                       '''),
+                  
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -212,16 +210,15 @@ class _GameScreenState extends State<GameScreen>
                             print('Checking Opponents');
                             appData.checkOpponentsCards();
                             print('Opponents Turn?? $opponentTurn');
-                            if (appData.playableIndexes.isEmpty &
-                                opponentTurn) {
+                            if (appData.playableIndexes.isEmpty ) {
 
                               print('non playable');
                               appData.opponentGotoMarket(deckOfCards);
                               appData.changeTurn(false);
                             }
 
-                            if (appData.playableCards.isNotEmpty &
-                                opponentTurn) {
+                            if (appData.playableCards.isNotEmpty 
+                                ) {
                               print('found playable');
                               appData.playCards(context, height, width, appData,
                                   deckOfCards, animationController);

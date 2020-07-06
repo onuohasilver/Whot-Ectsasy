@@ -181,7 +181,7 @@ class DummyCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             splashColor: Colors.white,
             onTap: onTap,
-            child: buildWhotCenter(Colors.white, height, width, false),
+            child: buildWhotCenter(Colors.white, height, width, large),
           ),
         ),
       ),
@@ -206,7 +206,7 @@ Center buildWhotCenter(
               shadows:
                   large ? null : [Shadow(blurRadius: 23.0, color: Colors.black)],
               color: color,
-              fontSize: (large ?? false) ? height * .025 : height * .025),
+              fontSize: large ? height * .03 : height * .034),
         ),
         Transform.rotate(
           angle: pi,
@@ -216,7 +216,7 @@ Center buildWhotCenter(
                 shadows:
                     large ? null : [Shadow(blurRadius: 23.0, color: Colors.black)],
                 color: color,
-                fontSize: (large ?? false) ? height * .025 : height * .025),
+                fontSize: large ? height * .03 : height * .04),
           ),
         ),
       ],
