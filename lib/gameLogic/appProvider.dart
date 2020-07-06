@@ -14,33 +14,32 @@ class Data extends ChangeNotifier {
   );
 
   List<CardDetail> currentPlayerCards = [];
-
   List<CardDetail> opponentPlayerCards = [];
 
   List<CardDetail> playedCards = [];
   int cardsPicked = 0;
   int cardsPickedTarget = 0;
   CardDetail currentCard;
-  bool opponentTurn=false;
+  bool opponentTurn = false;
   List<CardDetail> playableCards = [];
   List<int> playableIndexes = [];
   String userEmail;
   String userPassword;
+  String currentUser;
 
   ///test and dummify
   //TODO: delete this function
-  dummyCards(){
+  dummyCards() {
     // for(int x = 0;x<10;x++){
-    // opponentPlayerCards.insert(0, CardDetail('cross', 2));   
+    // opponentPlayerCards.insert(0, CardDetail('cross', 2));
     // }
-   
   }
 
   ///Assigns six cards apiece to each player
   ///from the card deck and removes the assigned cards
   ///from the unplayed deck.
   ///this is randomly done
-  
+
   createPlayerCards() {
     currentPlayerCards = getRandomCards(entireCardDeck);
     opponentPlayerCards = getRandomCards(entireCardDeck);
@@ -97,16 +96,16 @@ class Data extends ChangeNotifier {
   void specialCardCheck(BuildContext context, double height, double width,
       bool opponent, AnimationController animation, int length) {
     if (currentCard.number == 14) {
-      animation.repeat(); 
-      cardsPicked=0;
-      cardsPickedTarget=1;
+      animation.repeat();
+      cardsPicked = 0;
+      cardsPickedTarget = 1;
       changeTurn(opponent);
     }
-    
+
     if (currentCard.number == 2) {
       animation.repeat();
-      cardsPicked=0;
-      cardsPickedTarget=2;
+      cardsPicked = 0;
+      cardsPickedTarget = 2;
       changeTurn(opponent);
     }
     if (currentCard.number == 20) {
@@ -115,8 +114,8 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeTurn(bool opponent){
-    opponent?opponentTurn=true:opponentTurn=false;
+  void changeTurn(bool opponent) {
+    opponent ? opponentTurn = true : opponentTurn = false;
     print('Changed Turn to :$opponentTurn');
     notifyListeners();
   }
@@ -134,11 +133,12 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  void resetCardsPicked(){
-    cardsPicked=0;
-    cardsPickedTarget=0;
+  void resetCardsPicked() {
+    cardsPicked = 0;
+    cardsPickedTarget = 0;
     notifyListeners();
   }
+
   ///initiates the sequence required to play a card and
   ///remove it from the appropriate deck
   void playCards(BuildContext context, double height, double width,
@@ -165,14 +165,23 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-
   ///Gets User Email from a text entry
-  void updateEmail(email){
-    userEmail=email;
+  void updateEmail(email) {
+    userEmail = email;
     notifyListeners();
   }
-  void updatePassword(password){
-    userPassword=password;
+
+  ///Gets User Password from a text entry
+  void updatePassword(password) {
+    userPassword = password;
     notifyListeners();
+
+    
+    
   }
+  ///Updates the currently LoggedIn User Detail
+  void setCurrentUser(currentUserID) {
+      currentUser = currentUserID;
+      notifyListeners();
+    }
 }

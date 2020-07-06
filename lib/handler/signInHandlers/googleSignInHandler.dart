@@ -24,5 +24,6 @@ FirebaseAuth firebaseAuth = FirebaseAuth.instance;
     final FirebaseUser currentUser = await firebaseAuth.currentUser();
     assert(user.uid == currentUser.uid);
 
-    return 'signInWithGoogle succeeded: $user';
+    return currentUser.uid;
+    
   }
