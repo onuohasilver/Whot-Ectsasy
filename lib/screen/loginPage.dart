@@ -9,6 +9,7 @@ import 'dart:ui' as ui;
 import 'package:whot/components/buttons.dart';
 import 'package:flutter/services.dart';
 import 'package:whot/components/InputControllers/textnput.dart';
+import 'package:whot/handler/signInHandlers/googleSignInHandler.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -105,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen>
                               appData: appData,
                               height: height,
                               width: width,
-                              label: 'Enter',
+                              label: 'Create Account',
                               onTap: () {},
                             ),
                           ),
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen>
                           ),
                           Transform(
                             transform: Matrix4.translationValues(
-                                0,animation.value * width, 0),
+                                0, animation.value * width, 0),
                             child: LongMenuButton(
                               appData: appData,
                               height: height,
@@ -123,7 +124,11 @@ class _LoginScreenState extends State<LoginScreen>
                               color: Colors.green,
                               //TODO: Add google Image Icon here
                               label: 'Continue With Google',
-                              onTap: () {},
+                              onTap: () {
+                                signInWithGoogle().then((value) =>
+                                    Navigator.pushNamed(
+                                        context, 'Profile Screen'));
+                              },
                             ),
                           ),
                         ],
