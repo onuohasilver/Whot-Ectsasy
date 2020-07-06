@@ -24,6 +24,8 @@ class Data extends ChangeNotifier {
   bool opponentTurn=false;
   List<CardDetail> playableCards = [];
   List<int> playableIndexes = [];
+  String userEmail;
+  String userPassword;
 
   ///test and dummify
   //TODO: delete this function
@@ -160,6 +162,17 @@ class Data extends ChangeNotifier {
   ///to the stack of the opponents cards
   void opponentGotoMarket(List<CardDetail> deckOfCards) {
     addCardToPlayer(deckOfCards, true);
+    notifyListeners();
+  }
+
+
+  ///Gets User Email from a text entry
+  void updateEmail(email){
+    userEmail=email;
+    notifyListeners();
+  }
+  void updatePassword(password){
+    userPassword=password;
     notifyListeners();
   }
 }

@@ -10,6 +10,7 @@ import 'package:whot/components/buttons.dart';
 import 'package:flutter/services.dart';
 import 'package:whot/components/InputControllers/textnput.dart';
 import 'package:whot/handler/signInHandlers/googleSignInHandler.dart';
+import 'package:whot/handler/signInHandlers/emailSignInHandler.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -88,15 +89,18 @@ class _LoginScreenState extends State<LoginScreen>
                             transform: Matrix4.translationValues(
                                 animation.value * width, 0, 0),
                             child: TextInputContainer(
-                              width: width,
-                              hint: 'youremail@here.com',
-                            ),
+                                width: width,
+                                hint: 'youremail@here.com',
+                                email: true),
                           ),
                           Transform(
                             transform: Matrix4.translationValues(
                                 0, animation.value * width, 0),
                             child: TextInputContainer(
-                                width: width, hint: '*********'),
+                              width: width,
+                              hint: 'your password here',
+                              email: false,
+                            ),
                           ),
                           SizedBox(height: height * .03),
                           Transform(
@@ -107,7 +111,12 @@ class _LoginScreenState extends State<LoginScreen>
                               height: height,
                               width: width,
                               label: 'Create Account',
-                              onTap: () {},
+                              onTap: () {
+                                signUpWithEmail(
+                                        appData.userEmail, appData.userPassword)
+                                    .then((value) => Navigator.pushNamed(
+                                        context, 'Profile Screen'));
+                              },
                             ),
                           ),
                           Divider(
