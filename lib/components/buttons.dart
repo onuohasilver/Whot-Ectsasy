@@ -10,14 +10,16 @@ class LongMenuButton extends StatelessWidget {
     @required this.appData,
     @required this.onTap,
     @required this.label,
+    this.color
   }) : super(key: key);
 
   final double height;
   final double width;
   final Data appData;
+  final Color color;
   final Function onTap;
   final String label;
-
+  
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -28,7 +30,7 @@ class LongMenuButton extends StatelessWidget {
         child: Material(
           elevation: 25,
           borderRadius: BorderRadius.circular(15),
-          color: Colors.brown[900],
+          color: color??Colors.brown[900],
           child: InkWell(
               borderRadius: BorderRadius.circular(15),
               splashColor: Colors.yellow[800],
@@ -37,7 +39,7 @@ class LongMenuButton extends StatelessWidget {
                   label,
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: height*.035,
                       fontWeight: FontWeight.w600),
                 ),
               ),

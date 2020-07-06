@@ -1,90 +1,137 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whot/components/cardBuilder.dart';
 import 'package:whot/constants.dart';
 import 'package:whot/gameLogic/appProvider.dart';
+import 'dart:ui' as ui;
+import 'package:whot/components/buttons.dart';
+import 'package:flutter/services.dart';
+import 'package:whot/components/InputControllers/textnput.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
+  Animation animation;
+  Animation delayedAnimation;
+  Animation repeatingAnimation;
+  AnimationController animationController;
+  AnimationController repeatingAnimationController;
+
+  void initState() {
+    animationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 3));
+    repeatingAnimationController =
+        AnimationController(vsync: this, duration: Duration(seconds: 3));
+    animation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+        curve: Curves.bounceInOut, parent: animationController));
+    repeatingAnimation = Tween(begin: 1.0, end: 0.0).animate(CurvedAnimation(
+        curve: Curves.bounceInOut, parent: repeatingAnimationController));
+    delayedAnimation = Tween(begin: -1.0, end: 0.0).animate(CurvedAnimation(
+        curve: Interval(.3, 1.0, curve: Curves.bounceInOut),
+        parent: animationController));
+    SystemChrome.setPreferredOrientations(
+      [
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ],
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     Data appData = Provider.of<Data>(context);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    repeatingAnimationController.repeat(reverse: true);
+    animationController.forward();
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
-          decoration: kBackgroundImage,
-          height: height,
-          width: width,
-          child: Row(
-            children: <Widget>[
-              Container(
-                width: width * .4,
-                height: height,
-                color: Colors.white.withOpacity(.4),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Stack(
-                      children: [
-                        CircleAvatar(
-                          minRadius: height * .15,
-                          backgroundColor: Colors.brown[800].withOpacity(.3),
-                        ),
-                        Positioned.fill(
-                          top: 14,
-                          bottom: 5,
-                          child: CircleAvatar(
-                            minRadius: height * .14,
-                            backgroundColor: Colors.white.withOpacity(.7),
-                            child: Icon(Icons.person, size: 60),
-                          ),
-                        ),
-                      ],
+        child: AnimatedBuilder(
+          animation: repeatingAnimationController,
+          builder: (context, widget) {
+            return Container(
+              decoration: kBackgroundImage,
+              height: height,
+              width: width,
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    width: width * .4,
+                    height: height,
+                    color: Colors.white.withOpacity(.4),
+                    child: BackdropFilter(
+                      filter: ui.ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                      child: Transform.rotate(
+                        angle: pi,
+                        child: buildWhotCenter(
+                            Colors.white,
+                            height * 4 * (repeatingAnimation.value + 1),
+                            width * 3 * (repeatingAnimation.value + 1),
+                            false),
+                      ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Silver KetchUp',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                  width: width * .6,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      buildWhotCenter(
-                          Colors.white, height * 6, width * 3, false),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          width: width * .4,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(40)),
-                          child: TextField(
-                            decoration: InputDecoration(
-                                hintText: 'Enter Email',
-                                hintStyle: TextStyle(),
-                                fillColor: Colors.white.withOpacity(.4),
-                                filled: true,
-                                focusColor: Colors.blue,
-                                border: InputBorder.none),
+                  ),
+                  Container(
+                      width: width * .6,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Transform(
+                            transform: Matrix4.translationValues(
+                                animation.value * width, 0, 0),
+                            child: TextInputContainer(
+                              width: width,
+                              hint: 'youremail@here.com',
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ))
-            ],
-          ),
+                          Transform(
+                            transform: Matrix4.translationValues(
+                                0, animation.value * width, 0),
+                            child: TextInputContainer(
+                                width: width, hint: '*********'),
+                          ),
+                          SizedBox(height: height * .03),
+                          Transform(
+                            transform: Matrix4.translationValues(
+                                animation.value * width, 0, 0),
+                            child: LongMenuButton(
+                              appData: appData,
+                              height: height,
+                              width: width,
+                              label: 'Enter',
+                              onTap: () {},
+                            ),
+                          ),
+                          Divider(
+                            indent: width * .1,
+                            endIndent: width * .1,
+                          ),
+                          Transform(
+                            transform: Matrix4.translationValues(
+                                0,animation.value * width, 0),
+                            child: LongMenuButton(
+                              appData: appData,
+                              height: height,
+                              width: width,
+                              color: Colors.green,
+                              //TODO: Add google Image Icon here
+                              label: 'Continue With Google',
+                              onTap: () {},
+                            ),
+                          ),
+                        ],
+                      ))
+                ],
+              ),
+            );
+          },
         ),
       ),
     );

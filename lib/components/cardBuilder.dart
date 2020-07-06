@@ -206,7 +206,7 @@ Center buildWhotCenter(
               shadows:
                   large ? null : [Shadow(blurRadius: 23.0, color: Colors.black)],
               color: color,
-              fontSize: large ? height * .03 : height * .039),
+              fontSize: large ? height * .03 : height * .034),
         ),
         Transform.rotate(
           angle: pi,
