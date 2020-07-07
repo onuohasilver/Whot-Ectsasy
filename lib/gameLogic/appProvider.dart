@@ -25,6 +25,7 @@ class Data extends ChangeNotifier {
   List<int> playableIndexes = [];
   String userEmail;
   String userPassword;
+  String userName;
   String currentUser;
   int avatar = 1;
 
@@ -189,4 +190,10 @@ class Data extends ChangeNotifier {
     avatar == 1 ? avatar = 3 : avatar = 1;
     notifyListeners();
   }
+
+  /// Update the currently LoggedIn User Name
+  void setUserName(currentUserName){
+    userName=currentUserName;
+  }
+  
 }

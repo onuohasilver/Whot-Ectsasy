@@ -8,11 +8,14 @@ class TextInputContainer extends StatelessWidget {
     @required this.width,
     @required this.hint,
     @required this.email,
+    this.color, this.onChanged,
   }) : super(key: key);
 
   final double width;
   final String hint;
   final bool email;
+  final Function onChanged;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +29,16 @@ class TextInputContainer extends StatelessWidget {
         child: TextField(
           textAlign: TextAlign.center,
           obscureText: !email,
-          maxLength: email?null:8,
+          maxLength: email ? null : 8,
           maxLengthEnforced: !email,
           decoration: InputDecoration(
               hintText: hint,
               hintStyle: TextStyle(),
-              fillColor: Colors.white.withOpacity(.4),
+              fillColor: color ?? Colors.white.withOpacity(.4),
               filled: true,
               focusColor: Colors.blue,
               border: InputBorder.none),
-          onChanged: (entry) {
+          onChanged:onChanged?? (entry) {
             email ? appData.updateEmail(entry) : appData.updatePassword(entry);
           },
         ),

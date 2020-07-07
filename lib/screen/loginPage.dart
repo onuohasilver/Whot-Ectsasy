@@ -112,10 +112,6 @@ class _LoginScreenState extends State<LoginScreen>
                               width: width,
                               label: 'Create Account',
                               onTap: () {
-                                // signUpWithEmail(
-                                //         appData.userEmail, appData.userPassword)
-                                //     .then((value) => Navigator.pushNamed(
-                                //         context, 'Profile Screen'));
                                 showProfileSetup(context, height, width, appData);
                                 
                               },

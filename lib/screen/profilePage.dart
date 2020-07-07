@@ -45,6 +45,8 @@ class _ProfilePageState extends State<ProfilePage> {
                               minRadius: width * .09,
                               maxRadius: width * .09,
                               backgroundColor: Colors.brown,
+                              backgroundImage: AssetImage(
+                                'assets/profile${appData.avatar}.png'),
                             ),
                           ),
                           Positioned.fill(
@@ -71,7 +73,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             fontSize: width * .02, fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        'Onuoha Silver',
+                        appData.userName,
                         style: GoogleFonts.poppins(
                             fontSize: width * .03, fontWeight: FontWeight.w600),
                       )
