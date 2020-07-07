@@ -112,8 +112,8 @@ class _LoginScreenState extends State<LoginScreen>
                               width: width,
                               label: 'Create Account',
                               onTap: () {
-                                showProfileSetup(context, height, width, appData);
-                                
+                                showProfileSetup(
+                                    context, height, width, appData, false);
                               },
                             ),
                           ),
@@ -132,9 +132,8 @@ class _LoginScreenState extends State<LoginScreen>
                               //TODO: Add google Image Icon here
                               label: 'Continue With Google',
                               onTap: () async {
-                                final currentUser = await signInWithGoogle();
-                                appData.setCurrentUser(currentUser);
-                                Navigator.pushNamed(context, 'Profile Screen');
+                                showProfileSetup(
+                                    context, height, width, appData, true);
                               },
                             ),
                           ),
