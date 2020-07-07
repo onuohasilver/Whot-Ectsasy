@@ -96,7 +96,7 @@ showProfileSetup(
                       width: width,
                       appData: appData,
                       onTap: () {
-                        signUpWithEmail(appData.userEmail, appData.userPassword,appData)
+                        signUpWithEmail(appData)
                             .then((value) =>
                                 Navigator.pushNamed(context, 'Profile Screen'));
                       },
