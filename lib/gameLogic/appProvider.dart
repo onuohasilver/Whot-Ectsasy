@@ -25,7 +25,9 @@ class Data extends ChangeNotifier {
   List<int> playableIndexes = [];
   String userEmail;
   String userPassword;
+  String userName;
   String currentUser;
+  int avatar = 1;
 
   ///test and dummify
   //TODO: delete this function
@@ -175,13 +177,23 @@ class Data extends ChangeNotifier {
   void updatePassword(password) {
     userPassword = password;
     notifyListeners();
-
-    
-    
   }
+
   ///Updates the currently LoggedIn User Detail
   void setCurrentUser(currentUserID) {
-      currentUser = currentUserID;
-      notifyListeners();
-    }
+    currentUser = currentUserID;
+    notifyListeners();
+  }
+
+  ///Changes Avatar Value
+  void changeAvatar() {
+    avatar == 1 ? avatar = 3 : avatar = 1;
+    notifyListeners();
+  }
+
+  /// Update the currently LoggedIn User Name
+  void setUserName(currentUserName){
+    userName=currentUserName;
+  }
+  
 }

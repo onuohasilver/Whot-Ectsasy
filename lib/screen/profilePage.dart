@@ -37,41 +37,29 @@ class _ProfilePageState extends State<ProfilePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Stack(
-                        children: <Widget>[
-                          Align(
-                            alignment: Alignment.center,
-                            child: CircleAvatar(
-                              minRadius: width * .09,
-                              maxRadius: width * .09,
-                              backgroundColor: Colors.brown,
-                            ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: Material(
+                          color: Colors.transparent,
+                          shape:CircleBorder(),
+                          elevation: 14,
+                          child: CircleAvatar(
+                            minRadius: width * .09,
+                            maxRadius: width * .09,
+                            backgroundColor: Colors.brown,
+                            backgroundImage: AssetImage(
+                                'assets/profile${appData.avatar}.png'),
                           ),
-                          Positioned.fill(
-                            top: height * .04,
-                            left: width * .009,
-                            child: Align(
-                                alignment: Alignment.centerLeft,
-                                child:
-                                    Icon(Icons.arrow_left, size: width * .15)),
-                          ),
-                          Positioned.fill(
-                            top: height * .04,
-                            right: width * .009,
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Icon(Icons.arrow_right, size: width * .15),
-                            ),
-                          )
-                        ],
+                        ),
                       ),
+                      SizedBox(height:height*.05),
                       Text(
                         'Hi!',
                         style: GoogleFonts.poppins(
                             fontSize: width * .02, fontWeight: FontWeight.w600),
                       ),
                       Text(
-                        'Onuoha Silver',
+                        appData.userName,
                         style: GoogleFonts.poppins(
                             fontSize: width * .03, fontWeight: FontWeight.w600),
                       )
