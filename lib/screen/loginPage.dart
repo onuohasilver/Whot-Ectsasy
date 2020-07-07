@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whot/components/cardBuilder.dart';
+import 'package:whot/components/popups/profileSetUp.dart';
 import 'package:whot/constants.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'dart:ui' as ui;
@@ -115,82 +116,8 @@ class _LoginScreenState extends State<LoginScreen>
                                 //         appData.userEmail, appData.userPassword)
                                 //     .then((value) => Navigator.pushNamed(
                                 //         context, 'Profile Screen'));
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20)),
-                                        child: SingleChildScrollView(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            width: width * .5,
-                                            height: height * .7,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: height * .05),
-                                                  child:
-                                                      Text('Choose An Avatar'),
-                                                ),
-                                                Stack(
-                                                  children: <Widget>[
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: CircleAvatar(
-                                                        minRadius: width * .09,
-                                                        maxRadius: width * .09,
-                                                        backgroundColor:
-                                                            Colors.brown,
-                                                      ),
-                                                    ),
-                                                    Positioned.fill(
-                                                      left: width * .04,
-                                                      child: Align(
-                                                          alignment: Alignment
-                                                              .centerLeft,
-                                                          child: Icon(
-                                                              Icons.arrow_left,
-                                                              size:
-                                                                  width * .18)),
-                                                    ),
-                                                    Positioned.fill(
-                                                      right: width * .04,
-                                                      child: Align(
-                                                        alignment: Alignment
-                                                            .centerRight,
-                                                        child: Icon(
-                                                            Icons.arrow_right,
-                                                            size: width * .18),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                TextInputContainer(
-                                                    width: width,
-                                                    hint: 'Enter Username',
-                                                    email: true),
-                                                SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                      .viewInsets
-                                                      .bottom,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    });
+                                showProfileSetup(context, height, width, appData);
+                                
                               },
                             ),
                           ),

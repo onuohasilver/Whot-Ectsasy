@@ -26,6 +26,7 @@ class Data extends ChangeNotifier {
   String userEmail;
   String userPassword;
   String currentUser;
+  int avatar = 1;
 
   ///test and dummify
   //TODO: delete this function
@@ -175,13 +176,17 @@ class Data extends ChangeNotifier {
   void updatePassword(password) {
     userPassword = password;
     notifyListeners();
-
-    
-    
   }
+
   ///Updates the currently LoggedIn User Detail
   void setCurrentUser(currentUserID) {
-      currentUser = currentUserID;
-      notifyListeners();
-    }
+    currentUser = currentUserID;
+    notifyListeners();
+  }
+
+  ///Changes Avatar Value
+  void changeAvatar() {
+    avatar == 1 ? avatar = 3 : avatar = 1;
+    notifyListeners();
+  }
 }
