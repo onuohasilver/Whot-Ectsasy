@@ -6,12 +6,12 @@ import 'package:whot/components/imageContainer/opponentCard.dart';
 import 'package:whot/constants.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 
-class PlayFriend extends StatefulWidget {
+class AllUsers extends StatefulWidget {
   @override
-  _PlayFriendState createState() => _PlayFriendState();
+  _AllUsersState createState() => _AllUsersState();
 }
 
-class _PlayFriendState extends State<PlayFriend> {
+class _AllUsersState extends State<AllUsers> {
   Firestore firestore = Firestore.instance;
 
   @override
@@ -40,24 +40,42 @@ class _PlayFriendState extends State<PlayFriend> {
 
                         if (snapshot.hasData) {
                           final users = snapshot.data.documents;
-                          List friendList;
+                          List allUsers = [];
 
                           ///Go through the users and find the currentUserDocument
                           ///access the list of friends and build a list of widgets from it
                           for (var user in users) {
-                            (user['userid'] == appData.currentUser)
-                                ? friendList = [user['friends']]
+                            (user['userid'] != appData.currentUser)
+                                ? allUsers.add({
+                                    'name': user['UserName'],
+                                    'avatar': user['Avatar'],
+                                    'userID': user['userid']
+                                  })
                                 : print('');
                           }
-                          for (Map<String, dynamic> friend in friendList) {
+                          print(allUsers);
+                          for (var user in allUsers) {
                             friendsCards.add(OpponentCard(
-                                name: friend['name'],
-                                avatar: friend['avatar'],
-                                opponentID: friend['userid'],
-                                height: height,
-                                width: width,
-                                appData: appData));
-                            print(friend);
+                              label: 'Follow',
+                              name: user['name'],
+                              avatar: user['avatar'],
+                              opponentID: user['userid'],
+                              height: height,
+                              width: width,
+                              appData: appData,
+                              onTap: () {
+                                firestore
+                                    .collection('users')
+                                    .document(appData.currentUser)
+                                    .setData({
+                                  'friends': {
+                                    'avatar':user['avatar'],
+                                    'name':user['name'],
+                                  'userid':user['userID']
+                                  },
+                                }, merge: true);
+                              },
+                            ));
                           }
                           return ListView(
                             scrollDirection: Axis.horizontal,

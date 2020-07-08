@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:whot/screen/allUsers.dart';
 import 'package:whot/screen/playFriend.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,8 +69,13 @@ class _ProfilePageState extends State<ProfilePage>
                         height: height * 1.2,
                         width: width * 1.2,
                         appData: appData,
-                        onTap: () {},
-                        label: 'Play Random'),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                  builder: (context) => AllUsers()));
+                        },
+                        label: 'View All Users'),
                     LongMenuButton(
                         height: height * 1.2,
                         width: width * 1.2,

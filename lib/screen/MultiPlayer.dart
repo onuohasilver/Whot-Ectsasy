@@ -7,13 +7,14 @@ import 'package:whot/components/customWidgets.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'package:whot/gameLogic/buildItems.dart';
 import 'package:whot/constants.dart';
+import 'dart:ui' as ui;
 
-class GameScreen extends StatefulWidget {
+class MultiPlayer extends StatefulWidget {
   @override
-  _GameScreenState createState() => _GameScreenState();
+  _MultiPlayerState createState() => _MultiPlayerState();
 }
 
-class _GameScreenState extends State<GameScreen>
+class _MultiPlayerState extends State<MultiPlayer>
     with SingleTickerProviderStateMixin {
   @override
   void initState() {
@@ -57,7 +58,7 @@ class _GameScreenState extends State<GameScreen>
     appData = Provider.of<Data>(context);
     bool opponentTurn = appData.opponentTurn;
     currentPlayerCards = appData.currentPlayerCards;
-    currentPlayerCards.isEmpty ? appData.createPlayerCards() : code = 1;
+    
     opponentPlayerCards = appData.opponentPlayerCards;
     deckOfCards = appData.entireCardDeck;
     currentCard = appData.currentCard;
@@ -75,65 +76,68 @@ class _GameScreenState extends State<GameScreen>
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               //Stack of Unplayed Cards
-              Container(
-                //Animate Border Color when there is a go to market call
-                decoration: BoxDecoration(
-                    border: Border.all(width: 6, color: _animation.value),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Stack(
-                  overflow: Overflow.visible,
-                  fit: StackFit.loose,
-                  children: [
-                    DummyCard(
-                      height: height * 3.5,
-                      width: width * 1.5,
-                      large: true,
-                      color: Colors.red.withOpacity(.7),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 4.0, top: 5),
-                      child: DummyCard(
+              BackdropFilter(
+                filter:ui.ImageFilter.blur(sigmaX:5.0,sigmaY:4.0),
+                              child: Container(
+                  //Animate Border Color when there is a go to market call
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 6, color: _animation.value),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Stack(
+                    overflow: Overflow.visible,
+                    fit: StackFit.loose,
+                    children: [
+                      DummyCard(
                         height: height * 3.5,
                         width: width * 1.5,
                         large: true,
-                        color: Colors.red[800],
+                        color: Colors.red.withOpacity(.7),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0, top: 10),
-                      child: Draggable(
-                        data: CardDetail(
-                            deckOfCards.first.shape, deckOfCards.first.number),
-                        feedback: SizedBox(
-                          height: height * .3,
-                          width: width * .12,
-                          child: CardBuilder(
-                              height: height,
-                              width: width,
-                              number: deckOfCards.first.number,
-                              shape: deckOfCards.first.shape),
-                        ),
-                        onDragCompleted: () {
-                          appData.cardsPicked++;
-                          if (appData.cardsPicked ==
-                              appData.cardsPickedTarget) {
-                            animationController.reset();
-                            appData.resetCardsPicked();
-                          }
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0, top: 5),
                         child: DummyCard(
                           height: height * 3.5,
                           width: width * 1.5,
-                          color: Colors.red[900].withOpacity(.5),
                           large: true,
-                          onTap: () {
-                            scrollController.jumpTo(0.0);
-                            appData.addCardToPlayer(deckOfCards, false);
-                          },
+                          color: Colors.red[800],
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, top: 10),
+                        child: Draggable(
+                          data: CardDetail(
+                              deckOfCards.first.shape, deckOfCards.first.number),
+                          feedback: SizedBox(
+                            height: height * .3,
+                            width: width * .12,
+                            child: CardBuilder(
+                                height: height,
+                                width: width,
+                                number: deckOfCards.first.number,
+                                shape: deckOfCards.first.shape),
+                          ),
+                          onDragCompleted: () {
+                            appData.cardsPicked++;
+                            if (appData.cardsPicked ==
+                                appData.cardsPickedTarget) {
+                              animationController.reset();
+                              appData.resetCardsPicked();
+                            }
+                          },
+                          child: DummyCard(
+                            height: height * 3.5,
+                            width: width * 1.5,
+                            color: Colors.red[900].withOpacity(.5),
+                            large: true,
+                            onTap: () {
+                              scrollController.jumpTo(0.0);
+                              appData.addCardToPlayer(deckOfCards, false);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(width: width * .03),
@@ -141,7 +145,6 @@ class _GameScreenState extends State<GameScreen>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Row(
@@ -210,15 +213,13 @@ class _GameScreenState extends State<GameScreen>
                             print('Checking Opponents');
                             appData.checkOpponentsCards();
                             print('Opponents Turn?? $opponentTurn');
-                            if (appData.playableIndexes.isEmpty ) {
-
+                            if (appData.playableIndexes.isEmpty) {
                               print('non playable');
                               appData.opponentGotoMarket(deckOfCards);
                               appData.changeTurn(false);
                             }
 
-                            if (appData.playableCards.isNotEmpty 
-                                ) {
+                            if (appData.playableCards.isNotEmpty) {
                               print('found playable');
                               appData.playCards(context, height, width, appData,
                                   deckOfCards, animationController);
@@ -291,7 +292,7 @@ class _GameScreenState extends State<GameScreen>
                         SizedBox(width: width * .03),
                         Avatar(
                           width: width,
-                          onTap: appData.dummyCards(),
+                          
                         )
                       ],
                     ),
