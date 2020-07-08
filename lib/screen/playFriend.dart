@@ -1,8 +1,8 @@
 import 'dart:ui' as ui;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:whot/components/buttons.dart';
-import 'package:whot/components/imageContainer/userWhiteCard.dart';
+import 'package:whot/components/imageContainer/opponentCard.dart';
 import 'package:whot/constants.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 
@@ -12,11 +12,14 @@ class PlayFriend extends StatefulWidget {
 }
 
 class _PlayFriendState extends State<PlayFriend> {
+  Firestore firestore = Firestore.instance;
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     Data appData = Provider.of<Data>(context);
+
     return Scaffold(
       body: Container(
           height: height,
@@ -30,40 +33,40 @@ class _PlayFriendState extends State<PlayFriend> {
                   height: height * .7,
                   width: width,
                   padding: EdgeInsets.all(height * .02),
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      Container(
-                        height: height * .6,
-                        width: width * .2,
-                        padding: EdgeInsets.symmetric(horizontal:width*.025),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.white.withOpacity(.5),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Stack(
-                              
-                                                          children:[ CircleAvatar(
-                                maxRadius: width * .07,
-                                 backgroundColor: Colors.brown
-                              ),Align(alignment:Alignment.topRight,child: Container(height:height*.03,width:width*.02,child:Material(shape:CircleBorder(),color:Colors.green)))]
-                            ),
-                            SizedBox(height: height * .04),
-                            Text('UserName'),
-                            LongMenuButton(
+                  child: StreamBuilder<QuerySnapshot>(
+                      stream: firestore.collection('users').snapshots(),
+                      builder: (context, snapshot) {
+                        List<Widget> friendsCards = [Text('')];
+
+                        if (snapshot.hasData) {
+                          final users = snapshot.data.documents;
+                          List friendList;
+
+                          ///Go through the users and find the currentUserDocument
+                          ///access the list of friends and build a list of widgets from it
+                          for (var user in users) {
+                            (user['userid'] == appData.currentUser)
+                                ? friendList = user['friends']
+                                : print('');
+                          }
+                          for (Map<String,dynamic> friend in friendList) {
+                            friendsCards.add(OpponentCard(
+                                name: friend['name'],
+                                avatar: friend['avatar'],
                                 height: height,
                                 width: width,
-                                appData: appData,
-                                onTap: () {},
-                                label: 'Challenge')
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                                appData: appData));
+                            print(friend);
+                            
+                          }
+                          return ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: friendsCards,
+                          );
+                        } else {
+                          return CircularProgressIndicator();
+                        }
+                      }),
                 )
               ],
             ),
