@@ -36,10 +36,64 @@ List<CardDetail> getRandomCards(List<CardDetail> cardStack) {
   return cardsInPlay;
 }
 
-getSingleCard(List<CardDetail> cardStack) {
+///returns a single card from the playable card deck
+///and removes it from the deck
+CardDetail getSingleCard(List<CardDetail> cardStack) {
   CardDetail singleCard = cardStack.first;
   cardStack.removeAt(0);
   return singleCard;
+}
+
+///bleeds out the shapes and numbers contained in
+///each cardStack in and ordered manner
+Map<String, Map> bleedCards(List<CardDetail> stackOfCards) {
+  Map<String, Map> bledCards = {
+    'square': {'cardNumber': [], 'cardIndex': []},
+    'circle': {'cardNumber': [], 'cardIndex': []},
+    'cross': {'cardNumber': [], 'cardIndex': []},
+    'triangle': {'cardNumber': [], 'cardIndex': []},
+    'star': {'cardNumber': [], 'cardIndex': []},
+    'joker': {'cardNumber': [], 'cardIndex': []}
+  };
+  for (int index = 0; index < stackOfCards.length; index++) {
+    switch (stackOfCards[index].shape) {
+      case 'square':
+        bledCards['square']['cardNumber'].add(stackOfCards[index].number);
+        bledCards['square']['cardIndex'].add(index);
+        break;
+      case 'circle':
+        bledCards['circle']['cardNumber'].add(stackOfCards[index].number);
+        bledCards['circle']['cardIndex'].add(index);
+        break;
+      case 'cross':
+        bledCards['cross']['cardNumber'].add(stackOfCards[index].number);
+        bledCards['cross']['cardIndex'].add(index);
+        break;
+      case 'triangle':
+        bledCards['triangle']['cardNumber'].add(stackOfCards[index].number);
+        bledCards['triangle']['cardIndex'].add(index);
+        break;
+      case 'star':
+        bledCards['star']['cardNumber'].add(stackOfCards[index].number);
+        bledCards['star']['cardIndex'].add(index);
+        break;
+      case 'joker':
+        bledCards['joker']['cardNumber'].add(stackOfCards[index].number);
+        bledCards['joker']['cardIndex'].add(index);
+        break;
+
+      default:
+    }
+  }
+  return bledCards;
+}
+
+///bleeds a single Card and returns a
+///compact list containing the shape and number of the card
+List bleedSingleCard(singleCard) {
+  List bledCard;
+  bledCard = [singleCard.shape, singleCard.number];
+  return bledCard;
 }
 
 List<CardDetail> cardsInPlay = getRandomCards(cardStack);

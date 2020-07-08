@@ -10,6 +10,7 @@ signUpWithEmail(Data appData) async {
       email: appData.userEmail, password: appData.userPassword);
   final currentUser = await firebaseAuth.currentUser();
   if (authResult != null) {
+    appData.setCurrentUser(currentUser.uid);
     _firestore.collection('users').document(currentUser.uid).setData(
       {
         'userid': currentUser.uid,

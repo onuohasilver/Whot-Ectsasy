@@ -3,9 +3,10 @@ import 'package:whot/components/InputControllers/textnput.dart';
 import 'package:whot/components/buttons.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'package:whot/handler/signInHandlers/emailSignInHandler.dart';
+import 'package:whot/handler/signInHandlers/googleSignInHandler.dart';
 
-showProfileSetup(
-    BuildContext context, double height, double width, Data appData) {
+showProfileSetup(BuildContext context, double height, double width,
+    Data appData, bool google) {
   showDialog(
       context: context,
       builder: (context) {
@@ -96,7 +97,9 @@ showProfileSetup(
                       width: width,
                       appData: appData,
                       onTap: () {
-                        signUpWithEmail(appData)
+                        (google
+                                ? signInWithGoogle(appData)
+                                : signUpWithEmail(appData))
                             .then((value) =>
                                 Navigator.pushNamed(context, 'Profile Screen'));
                       },

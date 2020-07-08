@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +34,11 @@ class _StartGameState extends State<StartGame>
       ],
     );
     super.initState();
+  }
+@override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -92,7 +98,7 @@ class _StartGameState extends State<StartGame>
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          CupertinoPageRoute(
                             builder: (context) {
                               return LoginScreen();
                             },

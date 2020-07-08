@@ -28,6 +28,21 @@ class Data extends ChangeNotifier {
   String userName;
   String currentUser;
   int avatar = 1;
+  List friendCards = [];
+
+  ///Reset EntireCardDeck
+  void reloadEntireDeck() {
+    entireCardDeck = getCards(
+      [
+        'star',
+        'triangle',
+        'square',
+        'circle',
+        'cross',
+      ],
+    );
+    notifyListeners();
+  }
 
   ///test and dummify
   //TODO: delete this function
@@ -192,8 +207,14 @@ class Data extends ChangeNotifier {
   }
 
   /// Update the currently LoggedIn User Name
-  void setUserName(currentUserName){
-    userName=currentUserName;
+  void setUserName(currentUserName) {
+    userName = currentUserName;
+    notifyListeners();
   }
-  
+
+  ///Update Friend Cards
+  void addFriendCard(card) {
+    friendCards.add(card);
+    notifyListeners();
+  }
 }

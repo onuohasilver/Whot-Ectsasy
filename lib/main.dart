@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whot/screen/startGame.dart';
 import 'package:whot/screen/profilePage.dart';
+import 'package:whot/screen/playFriend.dart';
 import 'gameLogic/appProvider.dart';
 
 void main() {
@@ -13,7 +14,8 @@ void main() {
         debugShowCheckedModeBanner: false,
         routes:{
           'Landing Screen':(context)=>StartGame(),
-          'Profile Screen':(context)=>ProfilePage()
+          'Profile Screen':(context)=>ProfilePage(),
+          'Play A Friend':(context)=>PlayFriend()
 
         }
       ),
