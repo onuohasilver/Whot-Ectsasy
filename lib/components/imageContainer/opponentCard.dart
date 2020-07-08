@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/components/buttons.dart';
+import 'package:whot/components/popups/gameLoading.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'package:whot/screen/MultiPlayer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,7 +17,8 @@ class OpponentCard extends StatelessWidget {
     @required this.name,
     @required this.avatar,
     @required this.opponentID,
-    this.onTap, this.label,
+    this.onTap,
+    this.label,
   }) : super(key: key);
 
   final double height;
@@ -31,6 +33,7 @@ class OpponentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Firestore firestore = Firestore.instance;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: width * .015),
       child: Container(
@@ -75,15 +78,18 @@ class OpponentCard extends StatelessWidget {
                 appData: appData,
                 onTap: onTap ??
                     () {
+                      appData.reloadEntireDeck();
                       appData.createPlayerCards();
                       appData.playSelectedCard(
                           getSingleCard(appData.entireCardDeck));
+                      String gameID =
+                          '${opponentID.substring(10)}${appData.currentUser.substring(10)}';
                       firestore
                           .collection('users')
                           .document(appData.currentUser)
                           .setData({
-                        'activeGames': {
-                          'gameOn': {
+                        'currentGame': {
+                          gameID: {
                             'entireCardDeck':
                                 bleedCards(appData.entireCardDeck),
                             'currentCard': bleedSingleCard(appData.currentCard),
@@ -94,12 +100,10 @@ class OpponentCard extends StatelessWidget {
                           }
                         },
                       }, merge: true);
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => MultiPlayer()));
+                      gameLoading(context, height, width, appData, firestore,
+                          opponentID, gameID);
                     },
-                label:label?? 'Challenge')
+                label: label ?? 'Challenge'),
           ],
         ),
       ),

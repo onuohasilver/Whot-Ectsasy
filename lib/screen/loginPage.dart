@@ -46,6 +46,12 @@ class _LoginScreenState extends State<LoginScreen>
     super.initState();
   }
 
+@override
+  void dispose() {
+    animationController.dispose();
+    repeatingAnimationController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     Data appData = Provider.of<Data>(context);
