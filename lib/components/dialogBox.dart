@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:whot/collection/cards.dart';
 import 'cardBuilder.dart';
 
-
 ///display the parsed joker Content popUp
-showJokerSelectionContent(
-    BuildContext context, double height, double width, CardDetail currentCard) {
+showJokerSelectionContent(BuildContext context, double height, double width,
+    CardDetail currentCard) {
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -21,6 +20,7 @@ showJokerSelectionContent(
     },
   );
 }
+
 /// A dialog Content pop-up triggered when the Whot 20
 /// has been played. Reveals all the available shapes in a card deck
 jokerSelectionContent(
@@ -57,7 +57,6 @@ jokerSelectionContent(
 
 /// return a selectable Card that changes the value of the
 /// current card shape
-
 Padding showCard(BuildContext context, double height, double width,
     String shape, CardDetail currentCard) {
   return Padding(
@@ -69,6 +68,7 @@ Padding showCard(BuildContext context, double height, double width,
         onTap: () {
           currentCard.shape = shape;
           currentCard.number = 20;
+
           Navigator.pop(context);
         },
         shape: shape,

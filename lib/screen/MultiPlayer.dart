@@ -4,10 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:whot/components/cardBuilder.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/components/customWidgets.dart';
-import 'package:whot/gameLogic/appProvider.dart';
-import 'package:whot/gameLogic/buildItems.dart';
+import 'package:whot/gameLogic/multiPlayerBuildItems.dart';
 import 'package:whot/constants.dart';
 import 'dart:ui' as ui;
+
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
 
 class MultiPlayer extends StatefulWidget {
   @override
@@ -36,7 +37,7 @@ class _MultiPlayerState extends State<MultiPlayer>
     );
   }
 
-  Data appData;
+  MultiPlayerData appData;
   AnimationController animationController;
   Animation _animation;
   List<CardDetail> currentPlayerCards;
@@ -44,8 +45,6 @@ class _MultiPlayerState extends State<MultiPlayer>
   List<CardDetail> playedCards;
   List<CardDetail> deckOfCards;
   CardDetail currentCard;
-
-  int code;
 
   ScrollController scrollController = ScrollController();
   final GlobalKey<AnimatedListState> _listKey = GlobalKey();
@@ -55,10 +54,10 @@ class _MultiPlayerState extends State<MultiPlayer>
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    appData = Provider.of<Data>(context);
+    appData = Provider.of<MultiPlayerData>(context);
     bool opponentTurn = appData.opponentTurn;
     currentPlayerCards = appData.currentPlayerCards;
-    
+
     opponentPlayerCards = appData.opponentPlayerCards;
     deckOfCards = appData.entireCardDeck;
     currentCard = appData.currentCard;
@@ -77,8 +76,8 @@ class _MultiPlayerState extends State<MultiPlayer>
             children: <Widget>[
               //Stack of Unplayed Cards
               BackdropFilter(
-                filter:ui.ImageFilter.blur(sigmaX:5.0,sigmaY:4.0),
-                              child: Container(
+                filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 4.0),
+                child: Container(
                   //Animate Border Color when there is a go to market call
                   decoration: BoxDecoration(
                       border: Border.all(width: 6, color: _animation.value),
@@ -105,8 +104,8 @@ class _MultiPlayerState extends State<MultiPlayer>
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0, top: 10),
                         child: Draggable(
-                          data: CardDetail(
-                              deckOfCards.first.shape, deckOfCards.first.number),
+                          data: CardDetail(deckOfCards.first.shape,
+                              deckOfCards.first.number),
                           feedback: SizedBox(
                             height: height * .3,
                             width: width * .12,
@@ -208,25 +207,6 @@ class _MultiPlayerState extends State<MultiPlayer>
                                 opponentPlayerCards.length);
 
                             appData.changeTurn(true);
-
-                            ///Handle Opponent Card Playing task
-                            print('Checking Opponents');
-                            appData.checkOpponentsCards();
-                            print('Opponents Turn?? $opponentTurn');
-                            if (appData.playableIndexes.isEmpty) {
-                              print('non playable');
-                              appData.opponentGotoMarket(deckOfCards);
-                              appData.changeTurn(false);
-                            }
-
-                            if (appData.playableCards.isNotEmpty) {
-                              print('found playable');
-                              appData.playCards(context, height, width, appData,
-                                  deckOfCards, animationController);
-                              appData.changeTurn(false);
-                            }
-
-                            print('never entered Loop $opponentTurn');
                           },
                           onWillAccept: (CardDetail cardDetail) {
                             if (!opponentTurn &
@@ -292,7 +272,6 @@ class _MultiPlayerState extends State<MultiPlayer>
                         SizedBox(width: width * .03),
                         Avatar(
                           width: width,
-                          
                         )
                       ],
                     ),

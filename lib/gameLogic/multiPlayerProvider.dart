@@ -3,7 +3,7 @@ import 'package:whot/collection/cards.dart';
 import 'package:whot/components/dialogBox.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-///MultiPlayerData to handle all the values 
+///MultiPlayerData to handle all the values
 ///that relates with online interaction
 class MultiPlayerData extends ChangeNotifier {
   List<CardDetail> entireCardDeck = getCards(
@@ -30,6 +30,8 @@ class MultiPlayerData extends ChangeNotifier {
   String userPassword;
   String userName;
   String currentUser;
+  String opponentID;
+  String gameID;
   int avatar = 1;
   List friendCards = [];
 
@@ -60,35 +62,10 @@ class MultiPlayerData extends ChangeNotifier {
   ///from the unplayed deck.
   ///this is randomly done
 
-  createPlayerCards(gameID,opponentID) {
+  createPlayerCards(opponentID) {
     currentPlayerCards = getRandomCards(entireCardDeck);
     opponentPlayerCards = getRandomCards(entireCardDeck);
-
-    ///Upload the created cards to the users firestore collection
-    firestore.collection('users').document(currentUser).setData(
-      {
-        'currentGame': {
-          gameID: {
-            'entireCardDeck': bleedCards(entireCardDeck),
-            'currentCard': bleedSingleCard(currentCard),
-            'opponentPlayerCards': bleedCards(opponentPlayerCards),
-            'currentPlayerCards': bleedCards(currentPlayerCards)
-          }
-        },
-      },
-      merge: true,
-    );
-    /// upload the opponent user cards to his firestore collection
-    firestore.collection('users').document(opponentID).setData({
-      'currentGame': {
-        gameID: {
-          'entireCardDeck': bleedCards(entireCardDeck),
-          'currentCard': bleedSingleCard(currentCard),
-          'opponentPlayerCards': bleedCards(opponentPlayerCards),
-          'currentPlayerCards': bleedCards(currentPlayerCards)
-        }
-      },
-    }, merge: true);
+    playSelectedCard(getSingleCard(entireCardDeck));
     notifyListeners();
   }
 
@@ -99,6 +76,8 @@ class MultiPlayerData extends ChangeNotifier {
     opponent
         ? opponentPlayerCards.insert(0, singleCard)
         : currentPlayerCards.insert(0, singleCard);
+    updateOnlineCards(currentUser);
+    updateOnlineCards(opponentID);
     notifyListeners();
   }
 
@@ -107,6 +86,15 @@ class MultiPlayerData extends ChangeNotifier {
   void playSelectedCard(CardDetail selectedCard) {
     currentCard = selectedCard;
     playedCards.add(selectedCard);
+    updateOnlineCards(currentUser);
+    updateOnlineCards(opponentID);
+    notifyListeners();
+  }
+
+  ///Update current GameID
+  void setGameIDs(String gameIDx, String opponentIDx) {
+    gameID = gameIDx;
+    opponentID = opponentIDx;
     notifyListeners();
   }
 
@@ -115,6 +103,8 @@ class MultiPlayerData extends ChangeNotifier {
   ///when the Joker 20 card has been played
   void updateCurrentCard(CardDetail selectedCard) {
     currentCard = selectedCard;
+    updateOnlineCards(currentUser);
+    updateOnlineCards(opponentID);
     notifyListeners();
   }
 
@@ -157,12 +147,15 @@ class MultiPlayerData extends ChangeNotifier {
     if (currentCard.number == 20) {
       showJokerSelectionContent(context, height, width, currentCard);
     }
+
     notifyListeners();
   }
 
   void changeTurn(bool opponent) {
     opponent ? opponentTurn = true : opponentTurn = false;
     print('Changed Turn to :$opponentTurn');
+    updateOnlineCards(currentUser);
+    updateOnlineCards(opponentID);
     notifyListeners();
   }
 
@@ -250,5 +243,25 @@ class MultiPlayerData extends ChangeNotifier {
   void addFriendCard(card) {
     friendCards.add(card);
     notifyListeners();
+  }
+
+  Future<void> updateOnlineCards(user) {
+    return firestore.collection('users').document(user).setData(
+      {
+        'currentGame': {
+          gameID: {
+            'entireCardDeck': bleedCards(entireCardDeck),
+            'currentCard': bleedSingleCard(currentCard),
+            'opponentPlayerCards': user == opponentID
+                ? bleedCards(currentPlayerCards)
+                : bleedCards(opponentPlayerCards),
+            'currentPlayerCards': user == opponentID
+                ? bleedCards(opponentPlayerCards)
+                : bleedCards(currentPlayerCards)
+          }
+        },
+      },
+      merge: true,
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
 import 'package:whot/screen/allUsers.dart';
 import 'package:whot/screen/playFriend.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    Data appData = Provider.of<Data>(context);
+    MultiPlayerData appData = Provider.of<MultiPlayerData>(context);
     // animationController.forward();
     return Scaffold(
       body: Container(

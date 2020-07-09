@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whot/components/imageContainer/opponentCard.dart';
 import 'package:whot/constants.dart';
-import 'package:whot/gameLogic/appProvider.dart';
 import 'package:whot/gameLogic/multiPlayerProvider.dart';
 
 class PlayFriend extends StatefulWidget {
@@ -51,13 +50,15 @@ class _PlayFriendState extends State<PlayFriend> {
                                 : print('');
                           }
                           for (Map<String, dynamic> friend in friendList) {
-                            friendsCards.add(OpponentCard(
-                                name: friend['name'],
-                                avatar: friend['avatar'],
-                                opponentID: friend['userid'],
-                                height: height,
-                                width: width,
-                                appData: appData));
+                            friendsCards.add(
+                              OpponentCard(
+                                  name: friend['name'],
+                                  avatar: friend['avatar'],
+                                  opponentID: friend['userid'],
+                                  height: height,
+                                  width: width,
+                                  appData: appData),
+                            );
                             print(friend);
                           }
                           return ListView(
@@ -73,5 +74,10 @@ class _PlayFriendState extends State<PlayFriend> {
             ),
           )),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

@@ -5,7 +5,7 @@ import 'package:whot/gameLogic/multiPlayerProvider.dart';
 import 'package:whot/screen/MultiPlayer.dart';
 
 gameLoading(BuildContext context, double height, double width,
-    MultiPlayerData appData, Firestore firestore, opponentID, gameID) {
+    MultiPlayerData appData, Firestore firestore, opponentID) {
   showDialog(
       context: context,
       builder: (context) {
@@ -27,7 +27,7 @@ gameLoading(BuildContext context, double height, double width,
                   GameChallengeStream(
                       firestore: firestore,
                       opponentID: opponentID,
-                      gameID: gameID)
+                      gameID: appData.gameID)
                 ],
               )),
         );
@@ -57,7 +57,8 @@ class GameChallengeStream extends StatelessWidget {
             WidgetsBinding.instance.addPostFrameCallback(
               (_) {
                 Navigator.pop(context);
-                Navigator.push(
+                
+                Navigator.pushReplacement(
                   context,
                   CupertinoPageRoute(
                     builder: (context) => MultiPlayer(),

@@ -79,17 +79,14 @@ class OpponentCard extends StatelessWidget {
                 appData: appData,
                 onTap: onTap ??
                     () {
-                      // String gameID =
-                      //     '${opponentID.substring(10)}${appData.currentUser.substring(10)}';
-                      print(opponentID);
-                      print(appData.currentUser);
-                      // appData.reloadEntireDeck();
-                      // appData.createPlayerCards(gameID, opponentID);
-                      // appData.playSelectedCard(
-                      //     getSingleCard(appData.entireCardDeck));
+                      appData.setGameIDs(
+                          '${opponentID.substring(10)}${appData.currentUser.substring(10)}',
+                          opponentID);
 
-                      // gameLoading(context, height, width, appData, firestore,
-                      //     opponentID, gameID);
+                      appData.reloadEntireDeck();
+                      appData.createPlayerCards(opponentID);
+                      gameLoading(context, height, width, appData, firestore,
+                          opponentID);
                     },
                 label: label ?? 'Challenge'),
           ],

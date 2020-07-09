@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:whot/gameLogic/appProvider.dart';
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
+
 
 class UserWhiteCard extends StatelessWidget {
   const UserWhiteCard({
@@ -12,7 +13,7 @@ class UserWhiteCard extends StatelessWidget {
 
   final double width;
   final double height;
-  final Data appData;
+  final MultiPlayerData appData;
 
   @override
   Widget build(BuildContext context) {
