@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:whot/components/InputControllers/textnput.dart';
 import 'package:whot/components/buttons.dart';
-import 'package:whot/gameLogic/appProvider.dart';
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
 import 'package:whot/handler/signInHandlers/emailSignInHandler.dart';
 import 'package:whot/handler/signInHandlers/googleSignInHandler.dart';
 
 showProfileSetup(BuildContext context, double height, double width,
-    Data appData, bool google) {
+    MultiPlayerData appData, bool google) {
   showDialog(
       context: context,
       builder: (context) {

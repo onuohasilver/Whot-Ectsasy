@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:whot/gameLogic/appProvider.dart';
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
 import 'package:whot/screen/MultiPlayer.dart';
 
-gameLoading(BuildContext context, double height, double width, Data appData,
-    Firestore firestore, opponentID, gameID) {
+gameLoading(BuildContext context, double height, double width,
+    MultiPlayerData appData, Firestore firestore, opponentID, gameID) {
   showDialog(
       context: context,
       builder: (context) {
@@ -20,6 +20,7 @@ gameLoading(BuildContext context, double height, double width, Data appData,
               width: width * .3,
               height: height * .4,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text('Waiting for Opponent!'),
                   CircularProgressIndicator(),
@@ -57,11 +58,11 @@ class GameChallengeStream extends StatelessWidget {
               (_) {
                 Navigator.pop(context);
                 Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => MultiPlayer(),
-              ),
-            );
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => MultiPlayer(),
+                  ),
+                );
               },
             );
           }

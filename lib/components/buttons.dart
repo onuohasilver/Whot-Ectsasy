@@ -15,7 +15,7 @@ class LongMenuButton extends StatelessWidget {
 
   final double height;
   final double width;
-  final Data appData;
+  final dynamic appData;
   final Color color;
   final Function onTap;
   final String label;

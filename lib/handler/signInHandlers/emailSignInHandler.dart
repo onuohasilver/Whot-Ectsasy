@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:whot/gameLogic/appProvider.dart';
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
 
 final Firestore _firestore = Firestore.instance;
 
 FirebaseAuth firebaseAuth = FirebaseAuth.instance;
-signUpWithEmail(Data appData) async {
+signUpWithEmail(MultiPlayerData appData) async {
   final authResult = await firebaseAuth.createUserWithEmailAndPassword(
       email: appData.userEmail, password: appData.userPassword);
   final currentUser = await firebaseAuth.currentUser();
@@ -16,7 +16,8 @@ signUpWithEmail(Data appData) async {
         'userid': currentUser.uid,
         'username': appData.userName,
         'avatar': appData.avatar,
-        'friends': []
+        'friends': [],
+        'activeGames':[]
       },
     );
   }

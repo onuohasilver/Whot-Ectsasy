@@ -9,6 +9,7 @@ import 'dart:ui' as ui;
 import 'package:whot/components/buttons.dart';
 import 'package:flutter/services.dart';
 import 'package:whot/components/InputControllers/textnput.dart';
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
 import 'package:whot/handler/signInHandlers/googleSignInHandler.dart';
 import 'package:whot/handler/signInHandlers/emailSignInHandler.dart';
 
@@ -54,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen>
   }
   @override
   Widget build(BuildContext context) {
-    Data appData = Provider.of<Data>(context);
+    MultiPlayerData appData = Provider.of<MultiPlayerData>(context);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     repeatingAnimationController.repeat(reverse: true);

@@ -4,8 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:whot/collection/cards.dart';
 import 'package:whot/components/buttons.dart';
 import 'package:whot/components/popups/gameLoading.dart';
-import 'package:whot/gameLogic/appProvider.dart';
-import 'package:whot/screen/MultiPlayer.dart';
+
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OpponentCard extends StatelessWidget {
@@ -26,7 +27,7 @@ class OpponentCard extends StatelessWidget {
   final String name;
   final String avatar;
   final String opponentID;
-  final Data appData;
+  final MultiPlayerData appData;
   final Function onTap;
   final String label;
 
@@ -78,30 +79,17 @@ class OpponentCard extends StatelessWidget {
                 appData: appData,
                 onTap: onTap ??
                     () {
-                      appData.reloadEntireDeck();
-                      appData.createPlayerCards();
-                      appData.playSelectedCard(
-                          getSingleCard(appData.entireCardDeck));
-                      String gameID =
-                          '${opponentID.substring(10)}${appData.currentUser.substring(10)}';
-                      firestore
-                          .collection('users')
-                          .document(appData.currentUser)
-                          .setData({
-                        'currentGame': {
-                          gameID: {
-                            'entireCardDeck':
-                                bleedCards(appData.entireCardDeck),
-                            'currentCard': bleedSingleCard(appData.currentCard),
-                            'opponentPlayerCards':
-                                bleedCards(appData.opponentPlayerCards),
-                            'currentPlayerCards':
-                                bleedCards(appData.currentPlayerCards)
-                          }
-                        },
-                      }, merge: true);
-                      gameLoading(context, height, width, appData, firestore,
-                          opponentID, gameID);
+                      // String gameID =
+                      //     '${opponentID.substring(10)}${appData.currentUser.substring(10)}';
+                      print(opponentID);
+                      print(appData.currentUser);
+                      // appData.reloadEntireDeck();
+                      // appData.createPlayerCards(gameID, opponentID);
+                      // appData.playSelectedCard(
+                      //     getSingleCard(appData.entireCardDeck));
+
+                      // gameLoading(context, height, width, appData, firestore,
+                      //     opponentID, gameID);
                     },
                 label: label ?? 'Challenge'),
           ],

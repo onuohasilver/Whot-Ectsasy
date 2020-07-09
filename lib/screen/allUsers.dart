@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:whot/components/imageContainer/opponentCard.dart';
 import 'package:whot/constants.dart';
-import 'package:whot/gameLogic/appProvider.dart';
+import 'package:whot/gameLogic/multiPlayerProvider.dart';
 
 class AllUsers extends StatefulWidget {
   @override
@@ -18,7 +18,8 @@ class _AllUsersState extends State<AllUsers> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
-    Data appData = Provider.of<Data>(context);
+    MultiPlayerData appData = Provider.of<MultiPlayerData>(context);
+    
 
     return Scaffold(
       body: Container(
