@@ -34,6 +34,7 @@ class MultiPlayerData extends ChangeNotifier {
   String gameID;
   int avatar = 1;
   List friendCards = [];
+  int challenges=0;
 
   ///Reset EntireCardDeck
   void reloadEntireDeck() {
@@ -55,6 +56,11 @@ class MultiPlayerData extends ChangeNotifier {
     // for(int x = 0;x<10;x++){
     // opponentPlayerCards.insert(0, CardDetail('cross', 2));
     // }
+  }
+
+  void updateChallenges(int challengesX) {
+    challenges = challengesX;
+    notifyListeners();
   }
 
   ///Assigns six cards apiece to each player

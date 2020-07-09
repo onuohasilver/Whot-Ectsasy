@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:whot/gameLogic/multiPlayerProvider.dart';
 import 'package:whot/screen/allUsers.dart';
+import 'package:whot/screen/gameChallenges.dart';
 import 'package:whot/screen/playFriend.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -20,6 +22,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   FirebaseAuth auth = FirebaseAuth.instance;
+  Firestore firestore = Firestore.instance;
   Animation animation;
   AnimationController animationController;
   @override
@@ -77,12 +80,56 @@ class _ProfilePageState extends State<ProfilePage>
                                   builder: (context) => AllUsers()));
                         },
                         label: 'View All Users'),
-                    LongMenuButton(
-                        height: height * 1.2,
-                        width: width * 1.2,
-                        appData: appData,
-                        onTap: () {},
-                        label: 'View Previous Games'),
+                    Stack(children: [
+                      LongMenuButton(
+                          height: height * 1.2,
+                          width: width * 1.2,
+                          appData: appData,
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => GameChallenges()));
+                          },
+                          label: 'Game Challenges'),
+                      StreamBuilder<DocumentSnapshot>(
+                          stream: firestore
+                              .collection('users')
+                              .document(appData.currentUser)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                final challenges = snapshot.data['activeGames'];
+                                appData.updateChallenges(challenges.length);
+                              });
+                              return Container(height: 0, width: 0);
+                            } else {
+                              return Container(height: 0, width: 0);
+                            }
+                          }),
+                      Positioned.fill(
+                        right: width * .04,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: (appData.challenges > 0)
+                              ? Container(
+                                  height: height * .05,
+                                  width: width * .05,
+                                  child: Material(
+                                      shape: CircleBorder(),
+                                      child: Center(
+                                        child: Text(
+                                            appData.challenges.toString(),
+                                            style:
+                                                TextStyle(color: Colors.white)),
+                                      ),
+                                      color: Colors.red),
+                                )
+                              : Container(),
+                        ),
+                      ),
+                    ]),
                     LongMenuButton(
                         height: height * 1.2,
                         width: width * 1.2,
