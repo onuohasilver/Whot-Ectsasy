@@ -40,26 +40,26 @@ class _PlayFriendState extends State<PlayFriend> {
 
                         if (snapshot.hasData) {
                           final users = snapshot.data.documents;
-                          List friendList;
+                          dynamic friendList;
 
                           ///Go through the users and find the currentUserDocument
                           ///access the list of friends and build a list of widgets from it
                           for (var user in users) {
                             (user['userid'] == appData.currentUser)
-                                ? friendList = [user['friends']]
-                                : print('');
+                                ? friendList = user['friends']
+                                : Container();
                           }
-                          for (Map<String, dynamic> friend in friendList) {
+                          for (String friend in friendList.keys) {
                             friendsCards.add(
                               OpponentCard(
-                                  name: friend['name'],
-                                  avatar: friend['avatar'],
-                                  opponentID: friend['userid'],
+                                  name: friendList[friend]['name'],
+                                  avatar: friendList[friend]['avatar'],
+                                  opponentID: friendList[friend]['userid'],
                                   height: height,
                                   width: width,
                                   appData: appData),
                             );
-                            print(friend);
+                            Container();
                           }
                           return ListView(
                             scrollDirection: Axis.horizontal,

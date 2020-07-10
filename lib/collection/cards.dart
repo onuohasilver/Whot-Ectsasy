@@ -1,11 +1,17 @@
 import 'dart:math';
 
+///model for the card items
+///initialized as CardDetail(shape,number)
+///shape: The shape of the card
+/// number: the number value attached to the card
 class CardDetail {
   CardDetail(this.shape, this.number);
   String shape;
   int number;
 }
 
+/// generate all the  cards needed to make a stack of cards
+/// and also shuffle the list of generated cards
 List<CardDetail> getCards(List<String> shape) {
   List<CardDetail> generatedCards = [];
   for (var index = 0; index < shape.length; index++) {
@@ -23,6 +29,7 @@ List<CardDetail> getCards(List<String> shape) {
   return generatedCards;
 }
 
+///variable to hold the generated cardStack from getCards() function
 List<CardDetail> cardStack =
     getCards(['triangle', 'star', 'square', 'cross', 'circle']);
 

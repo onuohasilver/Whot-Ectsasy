@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:whot/collection/cards.dart';
 import 'package:whot/components/buttons.dart';
 import 'package:whot/components/popups/gameLoading.dart';
 
@@ -9,6 +8,8 @@ import 'package:whot/gameLogic/multiPlayerProvider.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+///Returns a container with the Opponent details containing the username
+///the opponent avatar and a call to action button 
 class OpponentCard extends StatelessWidget {
   const OpponentCard({
     Key key,

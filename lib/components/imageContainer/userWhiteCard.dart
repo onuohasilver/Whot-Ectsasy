@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:whot/gameLogic/multiPlayerProvider.dart';
 
-
+///Creates a white transparent container with the current users
+///details and a routing to the profile page
 class UserWhiteCard extends StatelessWidget {
   const UserWhiteCard({
     Key key,

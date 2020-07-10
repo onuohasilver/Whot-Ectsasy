@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:whot/gameLogic/appProvider.dart';
 import 'package:provider/provider.dart';
 
+///handles all text entry app wide,
+/// `email` argument indicates whether plain text or obscure text
+/// should be used for the instance of the textInputContainer
+///  ```dart
+/// TextInputContainer(width:width,hint:'Enter a value',email:true)
+/// ```dart
+
 class TextInputContainer extends StatelessWidget {
   const TextInputContainer({
     Key key,
     @required this.width,
     @required this.hint,
     @required this.email,
-    this.color, this.onChanged,
+    this.color,
+    this.onChanged,
   }) : super(key: key);
 
   final double width;
@@ -38,9 +46,12 @@ class TextInputContainer extends StatelessWidget {
               filled: true,
               focusColor: Colors.blue,
               border: InputBorder.none),
-          onChanged:onChanged?? (entry) {
-            email ? appData.updateEmail(entry) : appData.updatePassword(entry);
-          },
+          onChanged: onChanged ??
+              (entry) {
+                email
+                    ? appData.updateEmail(entry)
+                    : appData.updatePassword(entry);
+              },
         ),
       ),
     );

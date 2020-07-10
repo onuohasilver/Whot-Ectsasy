@@ -19,7 +19,6 @@ class _AllUsersState extends State<AllUsers> {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     MultiPlayerData appData = Provider.of<MultiPlayerData>(context);
-    
 
     return Scaffold(
       body: Container(
@@ -42,9 +41,10 @@ class _AllUsersState extends State<AllUsers> {
                         if (snapshot.hasData) {
                           final users = snapshot.data.documents;
                           List allUsers = [];
+                          dynamic friendList = {};
 
                           ///Go through the users and find the currentUserDocument
-                          ///access the list of friends and build a list of widgets from it
+                          ///access the list of non-followers and build a list of widgets from it
                           for (var user in users) {
                             (user['userid'] != appData.currentUser)
                                 ? allUsers.add({
@@ -52,9 +52,11 @@ class _AllUsersState extends State<AllUsers> {
                                     'avatar': user['Avatar'],
                                     'userID': user['userid']
                                   })
-                                : print('');
+                                : Container();
+                            (user['userid'] == appData.currentUser)
+                                ? friendList = user['friends']
+                                : Container();
                           }
-                          print(allUsers);
                           for (var user in allUsers) {
                             friendsCards.add(OpponentCard(
                               label: 'Follow',
@@ -65,15 +67,17 @@ class _AllUsersState extends State<AllUsers> {
                               width: width,
                               appData: appData,
                               onTap: () {
+                                friendList[user['userID']] = {
+                                  'avatar': user['avatar'],
+                                  'name': user['name'],
+                                  'userid': user['userID']
+                                };
+                                print('Here is the $friendList view');
                                 firestore
                                     .collection('users')
                                     .document(appData.currentUser)
                                     .setData({
-                                  'friends': {
-                                    'avatar':user['avatar'],
-                                    'name':user['name'],
-                                  'userid':user['userID']
-                                  },
+                                  'friends': friendList,
                                 }, merge: true);
                               },
                             ));

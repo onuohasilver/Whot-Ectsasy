@@ -58,12 +58,25 @@ class _GameChallengesState extends State<GameChallenges> {
                             if (challenges.contains(friend['userid'])) {
                               friendsCards.add(
                                 OpponentCard(
-                                    name: friend['name'],
-                                    avatar: friend['avatar'],
-                                    opponentID: friend['userid'],
-                                    height: height,
-                                    width: width,
-                                    appData: appData),
+                                  label: 'JoinGame',
+                                  name: friend['name'],
+                                  avatar: friend['avatar'],
+                                  opponentID: friend['userid'],
+                                  height: height,
+                                  width: width,
+                                  appData: appData,
+                                  onTap: () {
+                                    firestore
+                                        .collection('users')
+                                        .document(friend['userid'])
+                                        .setData(
+                                      {
+                                        'challenges': [appData.currentUser]
+                                      },
+                                      merge: true,
+                                    );
+                                  },
+                                ),
                               );
                             }
                           }

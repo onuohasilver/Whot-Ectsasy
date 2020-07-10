@@ -33,9 +33,10 @@ Firestore _firestore=Firestore.instance;
     _firestore.collection('users').document(currentUser.uid).setData(
       {
         'userid': currentUser.uid,
-        'username': appData.userName,
-        'avatar': appData.avatar,
-        'friends': [],
+        'UserName': appData.userName,
+        'Avatar': appData.avatar,
+        'friends': {},
+        'challenges':[],
         'activeGames':[]
       },
     );

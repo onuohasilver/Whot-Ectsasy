@@ -14,10 +14,11 @@ signUpWithEmail(MultiPlayerData appData) async {
     _firestore.collection('users').document(currentUser.uid).setData(
       {
         'userid': currentUser.uid,
-        'username': appData.userName,
-        'avatar': appData.avatar,
-        'friends': [],
-        'activeGames':[]
+        'UserName': appData.userName,
+        'Avatar': appData.avatar,
+        'friends': {},
+        'challenges': [],
+        'activeGames': []
       },
     );
   }
